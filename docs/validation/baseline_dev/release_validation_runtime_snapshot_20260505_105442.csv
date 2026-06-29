@@ -1,0 +1,2 @@
+result_set,study_file,status,benchmark_status,has_thresholds,metric_count,run_count,histories,random_seed_present,provenance_manifest,literature_sources,summary_path,metrics
+gamma_pe_bi2o3_composition_sweep,gamma_pe_bi2o3_composition_sweep.json,completed,unavailable,False,0,8,0,False,False,{},d:\projects\ShieldLabG4\tmp\baseline_dev_results\gamma_pe_bi2o3_composition_sweep\validation_summary.json,{}

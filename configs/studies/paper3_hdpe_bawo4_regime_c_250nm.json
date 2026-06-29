@@ -1,0 +1,59 @@
+{
+  "study_id": "paper3_hdpe_bawo4_regime_c_250nm",
+  "description": "Paper 3 Regime C – explicit RVE (G4MultiUnion), minimal feasible geometry. 250-nm RVE (N~45 spheres, r=25 nm) at phi=0.189 (60.0 wt% BaWO4, rho_eff=1.927 g/cm3). Same particle radius and volume fraction as Regime B; box side reduced so that G4Voxelizer grid (2N)^3 = 90^3 = 729000 cells. L/r = 10 satisfies minimum RVE criterion. Dual K-edges: Ba at 37.441 keV and W at 69.525 keV. 10M histories/point.",
+  "materials": [
+    {
+      "name": "P3_HDPE_BaWO4_phi0p189",
+      "description": "HDPE/BaWO4 nanocomposite at volume fraction phi=0.189: 60.0 wt% BaWO4 / 40.0 wt% HDPE, rho_eff=1.927 g/cm3",
+      "density_g_cm3": 1.927,
+      "nanocomposite": {
+        "matrix": {"formula": "C2H4", "weight_fraction": 0.3998},
+        "fillers": [{"formula": "BaWO4", "weight_fraction": 0.6002}]
+      }
+    },
+    {
+      "name": "P3_HDPE_matrix",
+      "description": "HDPE matrix phase",
+      "density_g_cm3": 0.95,
+      "formula": "C2H4"
+    },
+    {
+      "name": "P3_BaWO4_filler",
+      "description": "Barium tungstate nanoparticle filler",
+      "density_g_cm3": 6.12,
+      "formula": "BaWO4"
+    }
+  ],
+  "geometry": {
+    "type": "rve_multiunion",
+    "transverse_size_cm": 2.5e-5,
+    "layers": [
+      {
+        "material": "P3_HDPE_BaWO4_phi0p189",
+        "thickness_cm": 2.5e-5,
+        "divisions": 1
+      }
+    ],
+    "rve": {
+      "effective_medium_material": "P3_HDPE_BaWO4_phi0p189",
+      "matrix_material": "P3_HDPE_matrix",
+      "filler_material": "P3_BaWO4_filler",
+      "side_nm": 250,
+      "particle_radius_nm": 25,
+      "volume_fraction": 0.189,
+      "max_particles": 55,
+      "seed": 66666
+    }
+  },
+  "source": {
+    "particle": "gamma",
+    "direction": [1, 0, 0],
+    "energy_unit": "keV"
+  },
+  "run": {
+    "physics_list": "emlivermore",
+    "histories": 10000000,
+    "output_dir": "results/paper3/regime_c_hdpe_bawo4",
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "study_schema_version": "1.0",
+  "name": "Paper 3 - Regime A - HDPE/Bi2O3 phi=0.189 (68.6 wt%)",
+  "description": "Regime-A (effective-medium) companion study for the cross-regime comparison. Material is the effective homogeneous composite corresponding to volume fraction phi=0.189: 68.6 wt% Bi2O3 / 31.4 wt% HDPE at rho=2.452 g/cm3 (self-consistent via linear mixture rule with rho_f=8.9, rho_m=0.95). This is the target material for the regime B (G4PVParameterised) and regime C (G4MultiUnion) RVE benchmarks. Validates that the effective-medium approximation matches the explicit-geometry RVE results.",
+  "paper3": {
+    "campaign": "paper3_nano_regimes",
+    "regime": "A",
+    "material_family": "HDPE_Bi2O3",
+    "target_figures": ["F_cross"],
+    "notes": "Cross-regime companion to regime_b_rve and regime_c_multiunion. Uses the same energy grid and same phi=0.189 effective composition as the RVE regimes."
+  },
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "P3_HDPE_Bi2O3_phi0p189",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "P3_HDPE_Bi2O3_phi0p189",
+      "density_g_cm3": 2.452,
+      "phase": "solid",
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.314,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "Bi2O3",
+            "weight_fraction": 0.686,
+            "label": "Bi2O3 nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/paper3/regime_a_hdpe_bi2o3_phi0p189",
+    "histories": 1000000,
+    "physics_list": "emlivermore",
+    "validation_mode": "benchmark_narrow_beam",
+    "random_seed": 13579,
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

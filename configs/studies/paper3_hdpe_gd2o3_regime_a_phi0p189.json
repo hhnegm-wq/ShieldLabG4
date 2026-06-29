@@ -1,0 +1,57 @@
+{
+  "study_schema_version": "1.0",
+  "name": "Paper 3 - Regime A - HDPE/Gd2O3 phi=0.189 (63.4 wt%)",
+  "description": "Regime-A (effective-medium) benchmark: HDPE/Gd2O3 at volume fraction phi=0.189. Gives 63.42 wt% Gd2O3 / 36.58 wt% HDPE at rho_eff=2.107 g/cm3 (linear mixture rule: rho_f=7.07, rho_m=0.95). Gd K-edge at 50.239 keV falls just above the 50 keV grid point — providing uniquely tight K-edge resolution within the energy grid. Gadolinium is a strong thermal neutron absorber, making this material relevant for mixed-field shielding applications.",
+  "paper3": {
+    "campaign": "paper3_nano_regimes",
+    "regime": "A",
+    "material_family": "HDPE_Gd2O3",
+    "target_figures": ["F_val_gd2o3", "F_cross_multi"],
+    "notes": "phi=0.189, same energy grid as other materials. Gd K-edge 50.239 keV barely above 50 keV grid point — tightest K-edge straddle in the study. random_seed=35791."
+  },
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "P3_HDPE_Gd2O3_phi0p189",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "P3_HDPE_Gd2O3_phi0p189",
+      "density_g_cm3": 2.107,
+      "phase": "solid",
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.3658,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "Gd2O3",
+            "weight_fraction": 0.6342,
+            "label": "Gd2O3 nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/paper3/regime_a_hdpe_gd2o3_phi0p189",
+    "histories": 1000000,
+    "physics_list": "emlivermore",
+    "validation_mode": "benchmark_narrow_beam",
+    "random_seed": 35791,
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

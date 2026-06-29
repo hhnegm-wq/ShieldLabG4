@@ -1,0 +1,5 @@
+from __future__ import annotations
+
+STUDY_SCHEMA_VERSION = "1.0"
+RESULT_SCHEMA_VERSION = "1.0"
+PROVENANCE_MANIFEST_SCHEMA_VERSION = "1.0"

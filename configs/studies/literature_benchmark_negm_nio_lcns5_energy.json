@@ -1,0 +1,197 @@
+{
+
+
+  "name": "literature_benchmark_negm_nio_lcns5_energy",
+
+
+  "description": "Curated benchmark from the NiO lithium-calcium-silicate glass paper using the LCNS5 sample.",
+
+
+  "materials": [
+
+
+    {
+
+
+      "name": "SLG_LCNS5",
+
+
+      "density_g_cm3": 2.6251,
+
+
+      "phase": "solid",
+
+
+      "formula_mass_fractions": {
+
+
+        "Li2O": 0.12845,
+
+
+        "NiO": 0.15714,
+
+
+        "SiO2": 0.71441
+
+
+      }
+
+
+    }
+
+
+  ],
+
+
+  "source": {
+
+
+    "particle": "gamma",
+
+
+    "energy": 662,
+
+
+    "energy_unit": "keV",
+
+
+    "direction": [1, 0, 0]
+
+
+  },
+
+
+  "geometry": {
+
+
+    "type": "slab",
+
+
+    "transverse_size_cm": 10,
+
+
+    "layers": [
+
+
+      {
+
+
+        "material": "SLG_LCNS5",
+
+
+        "thickness_cm": 2,
+
+
+        "divisions": 1
+
+
+      }
+
+
+    ]
+
+
+  },
+
+
+  "run": {
+
+
+    "histories": 50000,
+
+
+    "energy_grid": [15, 20, 30, 60, 122, 356, 662, 1173, 1332, 2615, 5000, 10000, 15000],
+
+
+    "validation_mode": "benchmark_narrow_beam",
+
+
+    "benchmark_validation": {
+
+
+      "target_transmission": 0.65,
+
+
+      "min_total_thickness_cm": 0.001,
+
+
+      "max_total_thickness_cm": 5.0
+
+
+    },
+
+
+    "physics_list": "emstandard_opt4",
+
+
+    "output_dir": "results/literature_benchmark_negm_nio_lcns5_energy"
+
+
+  },
+
+
+  "references": {
+
+
+    "paper_title": "A Comprehensive Investigation of the Impact of NiO on the Radiation Attenuation Characteristics of (CaO-Li2O-NiO-SiO2) Glass Structure",
+
+
+    "paper_doi": "10.1007/s11664-023-10833-9",
+
+
+    "sample_id": "LCNS5",
+    "buildup_validation_depth_mfp": 5.0,
+    "acceptance_criteria": {
+      "metrics": {
+        "mass_attenuation_cm2_g_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        },
+        "linear_attenuation_cm_inv_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        },
+        "buildup_observable_energy_percent_difference": {
+          "mean_abs_max": 35.0,
+          "max_abs_max": 60.0
+        }
+      }
+    },
+    "buildup_factors": {
+      "source": "Negm et al. 2023 supplementary material, Table S5",
+      "energy_unit": "MeV",
+      "coefficient_model": "G-P (Harima)",
+      "coefficients": [
+        {"energy": 0.015, "zeq": 15.18, "ebf": {"a": 0.233, "b": 1.018, "c": 0.378, "d": -0.151, "xk": 11.717}, "eabf": {"a": 0.229, "b": 1.018, "c": 0.379, "d": -0.134, "xk": 11.889}},
+        {"energy": 0.02, "zeq": 15.49, "ebf": {"a": 0.201, "b": 1.04, "c": 0.386, "d": -0.23, "xk": 20.832}, "eabf": {"a": 0.229, "b": 1.041, "c": 0.357, "d": -0.301, "xk": 21.075}},
+        {"energy": 0.03, "zeq": 15.83, "ebf": {"a": 0.215, "b": 1.119, "c": 0.388, "d": -0.115, "xk": 13.976}, "eabf": {"a": 0.216, "b": 1.119, "c": 0.387, "d": -0.117, "xk": 13.887}},
+        {"energy": 0.04, "zeq": 16.04, "ebf": {"a": 0.204, "b": 1.255, "c": 0.417, "d": -0.113, "xk": 14.599}, "eabf": {"a": 0.213, "b": 1.265, "c": 0.405, "d": -0.124, "xk": 14.742}},
+        {"energy": 0.05, "zeq": 16.2, "ebf": {"a": 0.179, "b": 1.427, "c": 0.481, "d": -0.1, "xk": 14.57}, "eabf": {"a": 0.181, "b": 1.461, "c": 0.474, "d": -0.101, "xk": 14.669}},
+        {"energy": 0.06, "zeq": 16.32, "ebf": {"a": 0.145, "b": 1.605, "c": 0.565, "d": -0.081, "xk": 14.583}, "eabf": {"a": 0.14, "b": 1.698, "c": 0.567, "d": -0.077, "xk": 15.27}},
+        {"energy": 0.08, "zeq": 16.48, "ebf": {"a": 0.083, "b": 1.908, "c": 0.736, "d": -0.049, "xk": 14.779}, "eabf": {"a": 0.137, "b": 2.429, "c": 0.621, "d": -0.087, "xk": 13.238}},
+        {"energy": 0.1, "zeq": 16.6, "ebf": {"a": 0.053, "b": 2.175, "c": 0.851, "d": -0.043, "xk": 13.462}, "eabf": {"a": 0.075, "b": 3.034, "c": 0.797, "d": -0.061, "xk": 13.507}},
+        {"energy": 0.15, "zeq": 16.78, "ebf": {"a": -0.007, "b": 2.397, "c": 1.096, "d": -0.022, "xk": 12.922}, "eabf": {"a": -0.008, "b": 3.724, "c": 1.101, "d": -0.019, "xk": 13.117}},
+        {"energy": 0.2, "zeq": 16.89, "ebf": {"a": -0.031, "b": 2.43, "c": 1.226, "d": -0.015, "xk": 11.468}, "eabf": {"a": -0.043, "b": 3.643, "c": 1.275, "d": -0.004, "xk": 16.273}},
+        {"energy": 0.3, "zeq": 17.01, "ebf": {"a": -0.052, "b": 2.351, "c": 1.337, "d": -0.01, "xk": 8.45}, "eabf": {"a": -0.072, "b": 3.156, "c": 1.423, "d": 0.016, "xk": 18.852}},
+        {"energy": 0.4, "zeq": 17.08, "ebf": {"a": -0.062, "b": 2.257, "c": 1.376, "d": 0.002, "xk": 13.719}, "eabf": {"a": -0.078, "b": 2.834, "c": 1.448, "d": 0.017, "xk": 16.798}},
+        {"energy": 0.5, "zeq": 17.11, "ebf": {"a": -0.069, "b": 2.169, "c": 1.394, "d": 0.017, "xk": 19.693}, "eabf": {"a": -0.079, "b": 2.608, "c": 1.447, "d": 0.019, "xk": 16.45}},
+        {"energy": 0.6, "zeq": 17.14, "ebf": {"a": -0.068, "b": 2.108, "c": 1.379, "d": 0.015, "xk": 18.556}, "eabf": {"a": -0.078, "b": 2.451, "c": 1.429, "d": 0.02, "xk": 16.495}},
+        {"energy": 0.8, "zeq": 17.16, "ebf": {"a": -0.065, "b": 2.008, "c": 1.346, "d": 0.017, "xk": 16.56}, "eabf": {"a": -0.073, "b": 2.25, "c": 1.383, "d": 0.021, "xk": 15.552}},
+        {"energy": 1.0, "zeq": 17.16, "ebf": {"a": -0.06, "b": 1.936, "c": 1.307, "d": 0.017, "xk": 15.957}, "eabf": {"a": -0.066, "b": 2.123, "c": 1.335, "d": 0.021, "xk": 15.21}},
+        {"energy": 1.5, "zeq": 14.03, "ebf": {"a": -0.048, "b": 1.842, "c": 1.23, "d": 0.016, "xk": 15.128}, "eabf": {"a": -0.051, "b": 1.941, "c": 1.241, "d": 0.018, "xk": 14.401}},
+        {"energy": 2.0, "zeq": 12.77, "ebf": {"a": -0.032, "b": 1.782, "c": 1.153, "d": 0.009, "xk": 15.496}, "eabf": {"a": -0.034, "b": 1.835, "c": 1.161, "d": 0.011, "xk": 14.785}},
+        {"energy": 3.0, "zeq": 12.45, "ebf": {"a": -0.012, "b": 1.674, "c": 1.061, "d": -0.002, "xk": 13.866}, "eabf": {"a": -0.012, "b": 1.695, "c": 1.06, "d": 0.0, "xk": 12.925}},
+        {"energy": 4.0, "zeq": 12.36, "ebf": {"a": 0.008, "b": 1.601, "c": 0.989, "d": -0.012, "xk": 12.727}, "eabf": {"a": 0.006, "b": 1.606, "c": 0.992, "d": -0.009, "xk": 13.831}},
+        {"energy": 5.0, "zeq": 12.33, "ebf": {"a": 0.022, "b": 1.535, "c": 0.946, "d": -0.02, "xk": 10.417}, "eabf": {"a": 0.026, "b": 1.544, "c": 0.93, "d": -0.026, "xk": 13.409}},
+        {"energy": 6.0, "zeq": 12.3, "ebf": {"a": 0.025, "b": 1.483, "c": 0.934, "d": -0.021, "xk": 12.109}, "eabf": {"a": 0.025, "b": 1.471, "c": 0.931, "d": -0.029, "xk": 15.306}},
+        {"energy": 8.0, "zeq": 12.27, "ebf": {"a": 0.033, "b": 1.402, "c": 0.906, "d": -0.028, "xk": 13.858}, "eabf": {"a": 0.032, "b": 1.378, "c": 0.91, "d": -0.024, "xk": 12.579}},
+        {"energy": 10.0, "zeq": 12.26, "ebf": {"a": 0.04, "b": 1.34, "c": 0.89, "d": -0.033, "xk": 13.074}, "eabf": {"a": 0.031, "b": 1.309, "c": 0.914, "d": -0.027, "xk": 14.497}},
+        {"energy": 15.0, "zeq": 12.25, "ebf": {"a": 0.055, "b": 1.251, "c": 0.853, "d": -0.05, "xk": 14.41}, "eabf": {"a": 0.06, "b": 1.23, "c": 0.841, "d": -0.053, "xk": 14.17}}
+      ]
+    }
+
+
+  }
+
+
+}

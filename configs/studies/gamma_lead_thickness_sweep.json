@@ -1,0 +1,26 @@
+{
+  "name": "Lead Thickness Sweep at 662 keV",
+  "description": "Vary lead slab thickness from 0.5 cm to 10 cm at fixed 662 keV (Cs-137 peak) to build a transmission vs. thickness curve.",
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "G4_Pb",
+        "thickness_cm": 1.0,
+        "divisions": 5
+      }
+    ]
+  },
+  "materials": [],
+  "run": {
+    "output_dir": "results/gamma_lead_thickness_sweep",
+    "histories": 50000,
+    "thickness_grid": [0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0]
+  }
+}

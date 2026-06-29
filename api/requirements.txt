@@ -1,0 +1,14 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.0
+numpy
+pandas
+scipy
+azure-identity>=1.17
+azure-storage-queue>=12.10
+azure-storage-blob>=12.20
+# OpenTelemetry – tracing (Phase 2.4)
+opentelemetry-sdk>=1.24
+opentelemetry-exporter-otlp-proto-grpc>=1.24
+# Azure Monitor exporter (optional; install with: pip install azure-monitor-opentelemetry-exporter)
+# azure-monitor-opentelemetry-exporter>=1.0.0b22

@@ -1,0 +1,92 @@
+# Build / cache
+build/
+tmp/
+.benchmarks/
+.streamlit/
+streamlit_debug.log
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/*
+!.vscode/settings.json.example
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups (must NOT be committed; use external artifact storage)
+backups/
+
+# Backup artifacts left in source directories — exclude unconditionally
+*.backup_*
+*.backup_pre_*
+
+# Throwaway debug/analysis scripts in project root
+tmp_*.py
+
+# Generated results / large artifacts
+results/
+build/results/
+build/macros/
+*.root
+*.hdf5
+
+# Generated Geant4 macros in repo root (reproducible from study configs)
+/generated_*.mac
+
+# Third-party reference papers (copyrighted publisher PDFs — do NOT distribute)
+docs/ref_papers/
+
+# ── Repository hygiene: git is the version history, not file copies ──────────
+# Accidental file-copy duplicates (Windows "- Copy", " copy", "(2)", "(3)")
+* - [Cc]opy*
+* [Cc]opy
+* [Cc]opy/
+* (2)*
+* (3)*
+# Archived manuscript snapshots (superseded by git history)
+docs/validation/archive/
+docs/validation/**/archive/
+# Regenerable Office / slide exports (track the .md source; regenerate via pandoc)
+docs/validation/**/*.docx
+docs/validation/**/*.pptx
+# Non-latest timestamped validation artifacts (keep *_latest.*)
+docs/validation/release_validation_report_20*.*
+docs/validation/release_validation_runtime_snapshot_20*.*
+docs/validation/methods_export_pack_20*.*
+docs/validation/methods_benchmark_table_20*.*
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python tooling
+.tox/
+.python-version
+
+# Generated test artifacts (Playwright screenshots, visual regression baselines)
+tests/visual/screenshots/
+tests/visual/baselines/
+
+# Root-level throwaway analysis scripts (created during debugging sessions)
+tmp_analysis.py
+tmp_*.py
+*_check2.py
+debug_*.py

@@ -1,0 +1,165 @@
+name: Deploy Azure App Service
+
+on:
+  workflow_run:
+    workflows: ["Release Validation Gate"]
+    types: [completed]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'master') }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure App Service startup command and HTTPS-only
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az webapp config set \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --startup-file "python -m streamlit run ui/app.py --server.port 8000 --server.address 0.0.0.0"
+
+            az webapp update \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --set httpsOnly=true
+
+            az webapp config appsettings set \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --settings WEBSITES_PORT=8000 SCM_DO_BUILD_DURING_DEPLOYMENT=true
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+
+      - name: Optional Easy Auth enforcement (Microsoft Entra ID)
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            if [ -z "$AZURE_EASYAUTH_CLIENT_ID" ] || [ -z "$AZURE_EASYAUTH_CLIENT_SECRET" ] || [ -z "$AZURE_EASYAUTH_ISSUER" ]; then
+              echo "Easy Auth secrets not fully set; skipping auth configuration step."
+              exit 0
+            fi
+
+            az webapp config appsettings set \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --settings AAD_CLIENT_SECRET="$AZURE_EASYAUTH_CLIENT_SECRET"
+
+            az webapp auth microsoft update \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --client-id "$AZURE_EASYAUTH_CLIENT_ID" \
+              --client-secret-setting-name AAD_CLIENT_SECRET \
+              --issuer "$AZURE_EASYAUTH_ISSUER"
+
+            az webapp auth update \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --enabled true \
+              --action LoginWithAzureActiveDirectory
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+          AZURE_EASYAUTH_CLIENT_ID: ${{ secrets.AZURE_EASYAUTH_CLIENT_ID }}
+          AZURE_EASYAUTH_CLIENT_SECRET: ${{ secrets.AZURE_EASYAUTH_CLIENT_SECRET }}
+          AZURE_EASYAUTH_ISSUER: ${{ secrets.AZURE_EASYAUTH_ISSUER }}
+
+      - name: Deploy app package
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          package: .
+
+      - name: Post-deploy smoke check
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            url="https://${AZURE_WEBAPP_NAME}.azurewebsites.net"
+            echo "Probing $url"
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+            if [ "$status" -lt 200 ] || [ "$status" -ge 500 ]; then
+              echo "Deployment verification failed with HTTP $status"
+              exit 1
+            fi
+            echo "Deployment verification passed with HTTP $status"
+        env:
+          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+
+      - name: Assign storage RBAC to web and worker identities
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            if [ -z "$AZURE_STORAGE_ACCOUNT_NAME" ]; then
+              echo "AZURE_STORAGE_ACCOUNT_NAME is not set; skipping RBAC automation."
+              exit 0
+            fi
+
+            STORAGE_SCOPE=$(az storage account show \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_STORAGE_ACCOUNT_NAME" \
+              --query id -o tsv)
+
+            WEB_PRINCIPAL_ID=$(az webapp identity show \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --name "$AZURE_WEBAPP_NAME" \
+              --query principalId -o tsv)
+
+            ensure_role() {
+              local principal_id="$1"
+              local role_name="$2"
+
+              if [ -z "$principal_id" ]; then
+                echo "Principal ID missing for role $role_name; skipping."
+                return 0
+              fi
+
+              local exists
+              exists=$(az role assignment list \
+                --assignee-object-id "$principal_id" \
+                --scope "$STORAGE_SCOPE" \
+                --query "[?roleDefinitionName=='$role_name'] | length(@)" -o tsv)
+
+              if [ "$exists" = "0" ]; then
+                az role assignment create \
+                  --assignee-object-id "$principal_id" \
+                  --assignee-principal-type ServicePrincipal \
+                  --role "$role_name" \
+                  --scope "$STORAGE_SCOPE" >/dev/null
+                echo "Assigned role '$role_name' to principal '$principal_id'."
+              else
+                echo "Role '$role_name' already assigned to principal '$principal_id'."
+              fi
+            }
+
+            ensure_role "$WEB_PRINCIPAL_ID" "Storage Queue Data Contributor"
+            ensure_role "$WEB_PRINCIPAL_ID" "Storage Blob Data Reader"
+
+            if [ -n "$AZURE_WORKER_PRINCIPAL_ID" ]; then
+              ensure_role "$AZURE_WORKER_PRINCIPAL_ID" "Storage Queue Data Contributor"
+              ensure_role "$AZURE_WORKER_PRINCIPAL_ID" "Storage Blob Data Contributor"
+            else
+              echo "AZURE_WORKER_PRINCIPAL_ID not set; skipping worker RBAC assignment."
+            fi
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_WORKER_PRINCIPAL_ID: ${{ secrets.AZURE_WORKER_PRINCIPAL_ID }}

@@ -1,0 +1,57 @@
+{
+  "study_schema_version": "1.0",
+  "name": "Paper 3 - Regime A High-Statistics - HDPE/Bi2O3",
+  "description": "High-statistics Paper 3 benchmark for the effective-medium regime. 30 wt% Bi2O3 nanoparticles dispersed in an HDPE matrix, evaluated over the manuscript energy grid with 1,000,000 histories per energy for publication-grade attenuation, buildup, and downstream-spectrum artifacts.",
+  "paper3": {
+    "campaign": "paper3_nano_regimes",
+    "regime": "A",
+    "material_family": "HDPE_Bi2O3",
+    "target_figures": ["F3", "F4", "F6"],
+    "notes": "High-statistics regime-A run intended for paper-quality figures, XCOM acceptance, buildup observables, and downstream spectrum export."
+  },
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "P3_HDPE_Bi2O3_30wt",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "P3_HDPE_Bi2O3_30wt",
+      "density_g_cm3": 2.45,
+      "phase": "solid",
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.7,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "Bi2O3",
+            "weight_fraction": 0.3,
+            "label": "Bi2O3 nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/paper3/regime_a_hdpe_bi2o3_highstat",
+    "histories": 1000000,
+    "physics_list": "emlivermore",
+    "validation_mode": "benchmark_narrow_beam",
+    "random_seed": 24680,
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

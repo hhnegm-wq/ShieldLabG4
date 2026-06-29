@@ -1,0 +1,41 @@
+{
+  "name": "PE / Bi2O3 Nanocomposite — Bi2O3 Composition Sweep at 662 keV",
+  "description": "Vary Bi2O3 filler weight fraction from 5% to 60% in an HDPE (C2H4) matrix at fixed 662 keV (Cs-137). Shows how mu/rho and HVL change with nanoparticle loading fraction.",
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "PE_Bi2O3",
+        "thickness_cm": 5.0,
+        "divisions": 5
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "PE_Bi2O3",
+      "density_g_cm3": 2.00,
+      "nanocomposite": {
+        "matrix": { "formula": "C2H4", "weight_fraction": 0.70 },
+        "fillers": [{ "formula": "Bi2O3", "weight_fraction": 0.30 }]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/gamma_pe_bi2o3_composition_sweep",
+    "histories": 50000,
+    "composition_sweep": {
+      "material": "PE_Bi2O3",
+      "compound": "Bi2O3",
+      "from_wt": 0.05,
+      "to_wt": 0.60,
+      "steps": 8
+    }
+  }
+}

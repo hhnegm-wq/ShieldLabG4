@@ -1,0 +1,59 @@
+{
+  "study_id": "paper3_hdpe_gd2o3_regime_c_250nm",
+  "description": "Paper 3 Regime C – explicit RVE (G4MultiUnion), minimal feasible geometry. 250-nm RVE (N~45 spheres, r=25 nm) at phi=0.189 (63.42 wt% Gd2O3, rho_eff=2.107 g/cm3). Same particle radius and volume fraction as Regime B; box side reduced so that G4Voxelizer grid (2N)^3 = 90^3 = 729000 cells. L/r = 10 satisfies minimum RVE criterion. Gd K-edge at 50.239 keV. 10M histories/point.",
+  "materials": [
+    {
+      "name": "P3_HDPE_Gd2O3_phi0p189",
+      "description": "HDPE/Gd2O3 nanocomposite at volume fraction phi=0.189: 63.42 wt% Gd2O3 / 36.58 wt% HDPE, rho_eff=2.107 g/cm3",
+      "density_g_cm3": 2.107,
+      "nanocomposite": {
+        "matrix": {"formula": "C2H4", "weight_fraction": 0.3658},
+        "fillers": [{"formula": "Gd2O3", "weight_fraction": 0.6342}]
+      }
+    },
+    {
+      "name": "P3_HDPE_matrix",
+      "description": "HDPE matrix phase",
+      "density_g_cm3": 0.95,
+      "formula": "C2H4"
+    },
+    {
+      "name": "P3_Gd2O3_filler",
+      "description": "Gadolinium oxide nanoparticle filler",
+      "density_g_cm3": 7.07,
+      "formula": "Gd2O3"
+    }
+  ],
+  "geometry": {
+    "type": "rve_multiunion",
+    "transverse_size_cm": 2.5e-5,
+    "layers": [
+      {
+        "material": "P3_HDPE_Gd2O3_phi0p189",
+        "thickness_cm": 2.5e-5,
+        "divisions": 1
+      }
+    ],
+    "rve": {
+      "effective_medium_material": "P3_HDPE_Gd2O3_phi0p189",
+      "matrix_material": "P3_HDPE_matrix",
+      "filler_material": "P3_Gd2O3_filler",
+      "side_nm": 250,
+      "particle_radius_nm": 25,
+      "volume_fraction": 0.189,
+      "max_particles": 55,
+      "seed": 98765
+    }
+  },
+  "source": {
+    "particle": "gamma",
+    "direction": [1, 0, 0],
+    "energy_unit": "keV"
+  },
+  "run": {
+    "physics_list": "emlivermore",
+    "histories": 10000000,
+    "output_dir": "results/paper3/regime_c_hdpe_gd2o3",
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

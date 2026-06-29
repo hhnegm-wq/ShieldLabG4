@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: "ShieldLab G4"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "ShieldLab G4 Team"
+    name-particle: ""
+    given-names: ""
+repository-code: "https://github.com/hhnegm-wq/ShieldLabG4"
+license: "AGPL-3.0-or-later"
+version: "1.0.0"
+date-released: "2026-05-11"
+abstract: >-
+  ShieldLab G4 is a Geant4-based radiation-shielding simulation platform
+  combining Monte Carlo transport with an analytical photon-shielding
+  layer (NIST/XCOM, ANSI/ANS-6.4.3 G-P buildup), a Streamlit UI, a
+  FastAPI service, and Azure-hosted batch workers.
+keywords:
+  - radiation shielding
+  - Geant4
+  - Monte Carlo
+  - photon attenuation
+  - dosimetry
+preferred-citation:
+  type: software
+  title: "ShieldLab G4"
+  authors:
+    - family-names: "ShieldLab G4 Team"
+      given-names: ""
+  version: "1.0.0"
+  year: 2026

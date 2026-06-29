@@ -1,0 +1,57 @@
+{
+  "study_schema_version": "1.0",
+  "name": "Paper 3 - Regime A - HDPE/PbWO4 phi=0.189 (67.5 wt%)",
+  "description": "Regime-A (effective-medium) benchmark: HDPE/PbWO4 at volume fraction phi=0.189. Gives 67.49 wt% PbWO4 / 32.51 wt% HDPE at rho_eff=2.369 g/cm3 (linear mixture rule: rho_f=8.46, rho_m=0.95). DUAL K-edges: W at 69.525 keV (straddles 50–80 keV) and Pb at 88.005 keV (straddles 80–100 keV). Highest filler density in the study. PbWO4 is a scintillator material used in CMS ECAL; relevant to detector shielding applications.",
+  "paper3": {
+    "campaign": "paper3_nano_regimes",
+    "regime": "A",
+    "material_family": "HDPE_PbWO4",
+    "target_figures": ["F_val_pbwo4", "F_cross_multi"],
+    "notes": "phi=0.189, same energy grid as other materials. Dual K-edge material: W K-edge 69.525 keV + Pb K-edge 88.005 keV. Highest rho_eff (2.369 g/cm3) in the study. random_seed=46802."
+  },
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "P3_HDPE_PbWO4_phi0p189",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "P3_HDPE_PbWO4_phi0p189",
+      "density_g_cm3": 2.369,
+      "phase": "solid",
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.3251,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "PbWO4",
+            "weight_fraction": 0.6749,
+            "label": "PbWO4 nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/paper3/regime_a_hdpe_pbwo4_phi0p189",
+    "histories": 1000000,
+    "physics_list": "emlivermore",
+    "validation_mode": "benchmark_narrow_beam",
+    "random_seed": 46802,
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Barite (BaSO4) + HDPE Composite — Volume Fraction Energy Sweep",
+  "description": "40 vol% barite (BaSO4, 4.48 g/cm3) in HDPE (C2H4, 0.95 g/cm3) matrix. Density computed from phase densities and volume fractions. Represents barite-polymer radiation-shielding panels used in diagnostic imaging facilities.",
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "Barite_HDPE_40vol",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "Barite_HDPE_40vol",
+      "density_g_cm3": 2.36,
+      "volume_fractions": [
+        {
+          "formula": "C2H4",
+          "density_g_cm3": 0.95,
+          "volume_fraction": 0.60,
+          "label": "HDPE matrix"
+        },
+        {
+          "formula": "BaSO4",
+          "density_g_cm3": 4.48,
+          "volume_fraction": 0.40,
+          "label": "Barite filler"
+        }
+      ]
+    }
+  ],
+  "run": {
+    "output_dir": "results/gamma_barite_hdpe_volume_sweep",
+    "histories": 50000,
+    "energy_grid": [100, 200, 300, 500, 662, 1000, 1250, 1500]
+  }
+}

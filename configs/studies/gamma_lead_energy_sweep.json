@@ -1,0 +1,27 @@
+{
+  "name": "gamma_lead_energy_sweep",
+  "description": "Prototype energy sweep: gamma beam through 1 cm lead at several photon energies.",
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "G4_Pb",
+        "thickness_cm": 1,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 3000,
+    "energy_grid": [100, 300, 662, 1000, 1500],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/gamma_lead_energy_sweep"
+  }
+}

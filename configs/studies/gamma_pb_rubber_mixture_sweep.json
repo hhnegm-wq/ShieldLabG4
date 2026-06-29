@@ -1,0 +1,42 @@
+{
+  "name": "Lead Rubber Mixture Energy Sweep",
+  "description": "50 wt% natural rubber (C5H8) + 50 wt% Pb powder, density 4.15 g/cm3. Represents flexible lead-rubber composite used in dental/medical X-ray protective aprons and curtains.",
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "PbRubber_50wt",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "PbRubber_50wt",
+      "density_g_cm3": 4.15,
+      "mixture": [
+        {
+          "formula": "C5H8",
+          "weight_fraction": 0.50,
+          "label": "Natural rubber"
+        },
+        {
+          "formula": "Pb",
+          "weight_fraction": 0.50,
+          "label": "Lead powder"
+        }
+      ]
+    }
+  ],
+  "run": {
+    "output_dir": "results/gamma_pb_rubber_mixture_sweep",
+    "histories": 50000,
+    "energy_grid": [100, 200, 300, 500, 662, 1000, 1250, 1500]
+  }
+}

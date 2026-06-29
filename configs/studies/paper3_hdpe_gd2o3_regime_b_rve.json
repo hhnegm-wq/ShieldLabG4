@@ -1,0 +1,59 @@
+{
+  "study_id": "paper3_hdpe_gd2o3_regime_b_rve",
+  "description": "Paper 3 Regime B – explicit RVE (G4PVParameterised) nanoparticle geometry. 1-µm cubic RVE with 2888 Gd2O3 spheres (R=25 nm, φ=0.189, 63.42 wt% Gd2O3) in HDPE matrix. Photon energy sweep 30–1332 keV, 10M histories/point. Gd K-edge at 50.239 keV falls just above the 50 keV grid point.",
+  "materials": [
+    {
+      "name": "P3_HDPE_Gd2O3_phi0p189",
+      "description": "HDPE/Gd2O3 nanocomposite at volume fraction phi=0.189: 63.42 wt% Gd2O3 / 36.58 wt% HDPE, rho_eff=2.107 g/cm3 (rho_f=7.07, rho_m=0.95)",
+      "density_g_cm3": 2.107,
+      "nanocomposite": {
+        "matrix": {"formula": "C2H4", "weight_fraction": 0.3658},
+        "fillers": [{"formula": "Gd2O3", "weight_fraction": 0.6342}]
+      }
+    },
+    {
+      "name": "P3_HDPE_matrix",
+      "description": "HDPE matrix phase",
+      "density_g_cm3": 0.95,
+      "formula": "C2H4"
+    },
+    {
+      "name": "P3_Gd2O3_filler",
+      "description": "Gadolinium oxide nanoparticle filler",
+      "density_g_cm3": 7.07,
+      "formula": "Gd2O3"
+    }
+  ],
+  "geometry": {
+    "type": "rve_explicit",
+    "transverse_size_cm": 1e-4,
+    "layers": [
+      {
+        "material": "P3_HDPE_Gd2O3_phi0p189",
+        "thickness_cm": 1e-4,
+        "divisions": 1
+      }
+    ],
+    "rve": {
+      "effective_medium_material": "P3_HDPE_Gd2O3_phi0p189",
+      "matrix_material": "P3_HDPE_matrix",
+      "filler_material": "P3_Gd2O3_filler",
+      "side_nm": 1000,
+      "particle_radius_nm": 25,
+      "volume_fraction": 0.189,
+      "max_particles": 3500,
+      "seed": 12345
+    }
+  },
+  "source": {
+    "particle": "gamma",
+    "direction": [1, 0, 0],
+    "energy_unit": "keV"
+  },
+  "run": {
+    "physics_list": "emlivermore",
+    "histories": 10000000,
+    "output_dir": "results/paper3/regime_b_hdpe_gd2o3",
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

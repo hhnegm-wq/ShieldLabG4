@@ -1,0 +1,127 @@
+name: Provision Azure Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - staging
+      enable_easy_auth:
+        description: Enable App Service Easy Auth
+        required: true
+        default: true
+        type: boolean
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - infra/**
+      - .github/workflows/provision-infra.yml
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  what-if-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure resource group exists
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az group create --name "$AZURE_RESOURCE_GROUP" --location "$AZURE_LOCATION"
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+
+      - name: Bicep what-if
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            ENABLE_EASY_AUTH="${ENABLE_EASY_AUTH:-true}"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              ENABLE_EASY_AUTH="${{ github.event.inputs.enable_easy_auth }}"
+            fi
+
+            az deployment group what-if \
+              --name "shieldlabg4-whatif-${GITHUB_RUN_ID}" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --template-file "$GITHUB_WORKSPACE/infra/main.bicep" \
+              --parameters \
+                location="$AZURE_LOCATION" \
+                appNamePrefix="$AZURE_APP_NAME_PREFIX" \
+                appServiceSku="$AZURE_APP_SERVICE_SKU" \
+                jobsQueueName="$AZURE_JOBS_QUEUE_NAME" \
+                inputContainerName="$AZURE_INPUT_CONTAINER_NAME" \
+                outputContainerName="$AZURE_OUTPUT_CONTAINER_NAME" \
+                enableEasyAuth="$ENABLE_EASY_AUTH" \
+                aadAuthority="$AZURE_EASYAUTH_ISSUER" \
+                aadClientId="$AZURE_EASYAUTH_CLIENT_ID" \
+                aadClientSecret="$AZURE_EASYAUTH_CLIENT_SECRET"
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+          AZURE_APP_NAME_PREFIX: ${{ secrets.AZURE_APP_NAME_PREFIX }}
+          AZURE_APP_SERVICE_SKU: ${{ secrets.AZURE_APP_SERVICE_SKU }}
+          AZURE_JOBS_QUEUE_NAME: ${{ secrets.AZURE_JOBS_QUEUE_NAME }}
+          AZURE_INPUT_CONTAINER_NAME: ${{ secrets.AZURE_INPUT_CONTAINER_NAME }}
+          AZURE_OUTPUT_CONTAINER_NAME: ${{ secrets.AZURE_OUTPUT_CONTAINER_NAME }}
+          AZURE_EASYAUTH_CLIENT_ID: ${{ secrets.AZURE_EASYAUTH_CLIENT_ID }}
+          AZURE_EASYAUTH_CLIENT_SECRET: ${{ secrets.AZURE_EASYAUTH_CLIENT_SECRET }}
+          AZURE_EASYAUTH_ISSUER: ${{ secrets.AZURE_EASYAUTH_ISSUER }}
+          ENABLE_EASY_AUTH: ${{ secrets.AZURE_ENABLE_EASY_AUTH }}
+
+      - name: Bicep deploy
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            ENABLE_EASY_AUTH="${ENABLE_EASY_AUTH:-true}"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              ENABLE_EASY_AUTH="${{ github.event.inputs.enable_easy_auth }}"
+            fi
+
+            az deployment group create \
+              --name "shieldlabg4-deploy-${GITHUB_RUN_ID}" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --template-file "$GITHUB_WORKSPACE/infra/main.bicep" \
+              --parameters \
+                location="$AZURE_LOCATION" \
+                appNamePrefix="$AZURE_APP_NAME_PREFIX" \
+                appServiceSku="$AZURE_APP_SERVICE_SKU" \
+                jobsQueueName="$AZURE_JOBS_QUEUE_NAME" \
+                inputContainerName="$AZURE_INPUT_CONTAINER_NAME" \
+                outputContainerName="$AZURE_OUTPUT_CONTAINER_NAME" \
+                enableEasyAuth="$ENABLE_EASY_AUTH" \
+                aadAuthority="$AZURE_EASYAUTH_ISSUER" \
+                aadClientId="$AZURE_EASYAUTH_CLIENT_ID" \
+                aadClientSecret="$AZURE_EASYAUTH_CLIENT_SECRET"
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+          AZURE_APP_NAME_PREFIX: ${{ secrets.AZURE_APP_NAME_PREFIX }}
+          AZURE_APP_SERVICE_SKU: ${{ secrets.AZURE_APP_SERVICE_SKU }}
+          AZURE_JOBS_QUEUE_NAME: ${{ secrets.AZURE_JOBS_QUEUE_NAME }}
+          AZURE_INPUT_CONTAINER_NAME: ${{ secrets.AZURE_INPUT_CONTAINER_NAME }}
+          AZURE_OUTPUT_CONTAINER_NAME: ${{ secrets.AZURE_OUTPUT_CONTAINER_NAME }}
+          AZURE_EASYAUTH_CLIENT_ID: ${{ secrets.AZURE_EASYAUTH_CLIENT_ID }}
+          AZURE_EASYAUTH_CLIENT_SECRET: ${{ secrets.AZURE_EASYAUTH_CLIENT_SECRET }}
+          AZURE_EASYAUTH_ISSUER: ${{ secrets.AZURE_EASYAUTH_ISSUER }}
+          ENABLE_EASY_AUTH: ${{ secrets.AZURE_ENABLE_EASY_AUTH }}

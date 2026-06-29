@@ -1,0 +1,24 @@
+[project]
+name = "shieldlab"
+version = "0.1.0"
+description = "Reporting and analysis tools for ShieldLab-G4 shielding simulations"
+requires-python = ">=3.10"
+dependencies = [
+  "matplotlib>=3.8",
+  "openpyxl>=3.1",
+  "pandas>=2.0",
+]
+
+[project.scripts]
+shieldlab-collect-sweep = "shieldlab.io.sweep_collector:main"
+shieldlab-macro = "shieldlab.io.macro_writer:main"
+shieldlab-report = "shieldlab.io.excel_writer:main"
+shieldlab-release-report = "shieldlab.io.release_validation_report:main"
+shieldlab-release-gate = "shieldlab.io.release_gate:main"
+shieldlab-run = "shieldlab.io.runner:main"
+shieldlab-validate = "shieldlab.io.study_validator:main"
+shieldlab-methods-pack = "shieldlab.io.methods_export_pack:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

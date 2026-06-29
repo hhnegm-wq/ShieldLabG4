@@ -1,0 +1,82 @@
+name: Release Validation Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Contrast audit
+        run: |
+          python "$GITHUB_WORKSPACE/tools/contrast_audit.py"
+
+      - name: Deprecation and text-quality guard
+        run: |
+          python "$GITHUB_WORKSPACE/tools/deprecation_guard.py"
+
+      - name: Figure style-drift lint (plt.show / rcParams writes)
+        run: |
+          python "$GITHUB_WORKSPACE/tools/figure_audit.py" --src-only \
+            --src-roots python/shieldlab ui
+
+      - name: Figure preset enforcement (UI pages must use apply_journal_style)
+        run: |
+          python "$GITHUB_WORKSPACE/tools/figure_audit.py" \
+            --src-only --no-source-lint \
+            --check-ui-presets --ui-src ui/pages
+
+      - name: Page scaffold compliance check
+        run: |
+          python "$GITHUB_WORKSPACE/tools/page_scaffold_check.py" ui/pages
+
+      - name: Install package and API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ./python
+          python -m pip install -r api/requirements.txt
+
+      - name: Install UI smoke dependencies
+        run: |
+          python -m pip install pytest streamlit playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Enforce no-skip UI smoke gate
+        run: |
+          bash "$GITHUB_WORKSPACE/scripts/ci_ui_smoke_gate.sh"
+
+      - name: Generate release validation report
+        run: |
+          python -m shieldlab.io.release_validation_report \
+            --project-root "$GITHUB_WORKSPACE" \
+            --studies-dir "$GITHUB_WORKSPACE/configs/studies" \
+            --results-dir "$GITHUB_WORKSPACE/build/results" \
+            --output-dir "$GITHUB_WORKSPACE/docs/validation"
+
+      - name: Evaluate release gates
+        run: |
+          python -m shieldlab.io.release_gate \
+            --profile release \
+            --report "$GITHUB_WORKSPACE/docs/validation/release_validation_report_latest.json" \
+            --max-study-errors 0 \
+            --max-failed-benchmark-sets 0 \
+            --min-threshold-coverage 0.95 \
+            --min-provenance-coverage 0.95 \
+            --min-citation-coverage 0.90 \
+            --min-statistical-adequacy 0.80

@@ -1,0 +1,26 @@
+{
+  "name": "gamma_lead_slab",
+  "description": "First ShieldLab-G4 validation study: 662 keV gamma beam through 1 cm lead.",
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "G4_Pb",
+        "thickness_cm": 1,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 10000,
+    "physics_list": "FTFP_BERT_EMZ",
+    "output_dir": "results/gamma_lead_slab"
+  }
+}

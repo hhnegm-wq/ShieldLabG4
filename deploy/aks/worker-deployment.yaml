@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shieldlab
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shieldlab-worker
+  namespace: shieldlab
+  annotations:
+    # Replace with your user-assigned managed identity client ID for AKS Workload Identity.
+    azure.workload.identity/client-id: "00000000-0000-0000-0000-000000000000"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shieldlab-worker
+  namespace: shieldlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shieldlab-worker
+  template:
+    metadata:
+      labels:
+        app: shieldlab-worker
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: shieldlab-worker
+      containers:
+        - name: worker
+          image: ghcr.io/your-org/shieldlabg4-worker:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AZURE_STORAGE_ACCOUNT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: shieldlab-worker-secrets
+                  key: azure_storage_account_url
+            - name: AZURE_QUEUE_NAME
+              value: simulation-jobs
+            - name: AZURE_INPUT_CONTAINER_NAME
+              value: simulation-input
+            - name: AZURE_OUTPUT_CONTAINER_NAME
+              value: simulation-output
+            - name: SHIELDLAB_WORKER_POLL_SECONDS
+              value: "10"
+            - name: SHIELDLAB_WORKER_VISIBILITY_TIMEOUT
+              value: "300"
+            - name: SHIELDLAB_WORKER_MAX_DEQUEUE_COUNT
+              value: "5"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: shieldlab-worker-hpa
+  namespace: shieldlab
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: shieldlab-worker
+  minReplicas: 1
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

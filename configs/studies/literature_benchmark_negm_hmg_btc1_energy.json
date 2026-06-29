@@ -1,0 +1,71 @@
+{
+  "name": "literature_benchmark_negm_hmg_btc1_energy",
+  "description": "Curated benchmark from the heavy metallic glasses paper using the BTC1 composition with the highest reported density.",
+  "materials": [
+    {
+      "name": "SLG_HMG_BTC1",
+      "density_g_cm3": 4.373,
+      "phase": "solid",
+      "formula_mass_fractions": {
+        "B2O3": 0.1575,
+        "TeO2": 0.8425
+      }
+    }
+  ],
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "SLG_HMG_BTC1",
+        "thickness_cm": 1,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 18000,
+    "energy_grid": [15, 20, 30, 60, 122, 356, 662, 1173, 1332, 2615, 5000, 10000, 15000],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/literature_benchmark_negm_hmg_btc1_energy"
+  },
+  "references": {
+    "paper_title": "Evaluation of Radiation Shielding Parameters of Different Metallic Glass Compositions for alpha, beta, gamma, n, and p Radiation",
+    "paper_doi": "10.1007/s11664-025-11830-w",
+    "sample_id": "BTC1",
+    "acceptance_criteria": {
+      "metrics": {
+        "mass_attenuation_cm2_g_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        },
+        "linear_attenuation_cm_inv_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        }
+      }
+    },
+    "coefficients": [
+      {
+        "energy": 15,
+        "energy_unit": "keV",
+        "source": "Negm et al. 2025 summary values for BTC1 over 0.015-15 MeV",
+        "linear_attenuation_cm_inv": 151.895,
+        "mass_attenuation_cm2_g": 35.0347
+      },
+      {
+        "energy": 15000,
+        "energy_unit": "keV",
+        "source": "Negm et al. 2025 summary values for BTC1 over 0.015-15 MeV",
+        "linear_attenuation_cm_inv": 0.152,
+        "mass_attenuation_cm2_g": 0.035
+      }
+    ]
+  }
+}

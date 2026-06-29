@@ -1,0 +1,35 @@
+{
+  "name": "gamma_pbwo4_formula_sweep",
+  "description": "Formula-defined lead tungstate shielding sweep using PbWO4 expanded to mass fractions automatically.",
+  "materials": [
+    {
+      "name": "SLG_PbWO4",
+      "formula": "PbWO4",
+      "density_g_cm3": 8.28,
+      "phase": "solid"
+    }
+  ],
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "SLG_PbWO4",
+        "thickness_cm": 1,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 3000,
+    "energy_grid": [100, 300, 662, 1000, 1500],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/gamma_pbwo4_formula_sweep"
+  }
+}

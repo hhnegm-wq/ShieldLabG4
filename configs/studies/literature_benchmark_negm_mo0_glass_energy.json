@@ -1,0 +1,74 @@
+{
+  "name": "literature_benchmark_negm_mo0_glass_energy",
+  "description": "Curated benchmark from the MoO3-doped phosphate glass paper using the Mo0.0 reference composition.",
+  "materials": [
+    {
+      "name": "SLG_Mo0_ReferenceGlass",
+      "density_g_cm3": 3.697,
+      "phase": "solid",
+      "formula_mass_fractions": {
+        "PbO": 0.38086,
+        "P2O5": 0.47433,
+        "Na2O": 0.10135,
+        "Al2O3": 0.04346
+      }
+    }
+  ],
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "SLG_Mo0_ReferenceGlass",
+        "thickness_cm": 2,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 16000,
+    "energy_grid": [284, 347, 511, 662, 1173, 1332, 2506],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/literature_benchmark_negm_mo0_glass_energy"
+  },
+  "references": {
+    "paper_title": "Electronic polarizability, dielectric and gamma-ray shielding features of PbO-P2O5-Na2O-Al2O3 glasses doped with MoO3",
+    "paper_doi": "10.1007/s10854-020-04709-5",
+    "sample_id": "Mo0.0",
+    "density_note": "Density derived from the paper's reported mu and mu/rho values at 0.284 MeV.",
+    "acceptance_criteria": {
+      "metrics": {
+        "mass_attenuation_cm2_g_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        },
+        "linear_attenuation_cm_inv_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        }
+      }
+    },
+    "coefficients": [
+      {
+        "energy": 284,
+        "energy_unit": "keV",
+        "source": "J Mater Sci: Mater Electron 2020 abstract values for Mo0.0",
+        "linear_attenuation_cm_inv": 0.684,
+        "mass_attenuation_cm2_g": 0.185
+      },
+      {
+        "energy": 2506,
+        "energy_unit": "keV",
+        "source": "J Mater Sci: Mater Electron 2020 abstract range values for Mo0.0",
+        "linear_attenuation_cm_inv": null,
+        "mass_attenuation_cm2_g": 0.0401
+      }
+    ]
+  }
+}

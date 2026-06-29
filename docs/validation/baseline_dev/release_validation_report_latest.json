@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-05-05T10:54:42.472144+00:00",
+  "project_root": "d:\\projects\\ShieldLabG4",
+  "studies_dir": "d:\\projects\\ShieldLabG4\\configs\\studies",
+  "results_dir": "d:\\projects\\ShieldLabG4\\tmp\\baseline_dev_results",
+  "summary": {
+    "study_count": 6,
+    "study_error_count": 0,
+    "study_warning_count": 6,
+    "runtime_result_sets": 1,
+    "benchmark_status_counts": {
+      "unavailable": 1
+    },
+    "failed_benchmark_sets": 0,
+    "threshold_backed_sets": 0,
+    "provenance_manifest_sets": 0,
+    "statistically_adequate_sets": 0,
+    "release_gate": "pass",
+    "q1_readiness": {
+      "no_study_validation_errors": true,
+      "no_failed_benchmark_sets": true,
+      "threshold_coverage_ratio": 0.0,
+      "provenance_coverage_ratio": 0.0,
+      "citation_coverage_ratio": 1.0,
+      "statistical_adequacy_ratio": 0.0,
+      "ready_for_submission": false
+    }
+  },
+  "reference_catalog": {
+    "entries": [
+      {
+        "study_file": "literature_benchmark_negm_atp_cdni_x30_energy.json",
+        "paper_title": "Exploring the potential of attapulgite clay composites containing intercalated nano-cadmium oxide and nano-nickel oxide for efficient radiation shielding applications",
+        "paper_doi": "10.1016/j.radphyschem.2024.112149",
+        "sample_id": "AT40Cd30Ni30",
+        "has_reference_coefficients": true,
+        "has_buildup_factors": false,
+        "reference_fingerprint": "d6cfff7af436090dfbd45062215f4619f1d1629b013738b6436d41fdfcfb068e"
+      },
+      {
+        "study_file": "literature_benchmark_negm_atp_cdpbo_x15_energy.json",
+        "paper_title": "Evaluation of shielding properties of a developed nanocomposite",
+        "paper_doi": "10.1088/1402-4896/ad3b48",
+        "sample_id": "AT70Pb15Cd15",
+        "has_reference_coefficients": true,
+        "has_buildup_factors": false,
+        "reference_fingerprint": "74a774a4e92ce4d6bd7cdd64008d520593195b265841f1d7af5a95727f2b0276"
+      },
+      {
+        "study_file": "literature_benchmark_negm_atp_cufe_x30_energy.json",
+        "paper_title": "A new nanocomposite of copper oxide and magnetite intercalated into attapulgite clay",
+        "paper_doi": "10.1016/j.radphyschem.2023.111398",
+        "sample_id": "AT40Fe30Cu30",
+        "has_reference_coefficients": true,
+        "has_buildup_factors": false,
+        "reference_fingerprint": "cbd83fcb577eaf18a6c0b9d87ee57b44cc79ae0592bb59ac0d54c4c7d4d6213d"
+      },
+      {
+        "study_file": "literature_benchmark_negm_hmg_btc1_energy.json",
+        "paper_title": "Evaluation of Radiation Shielding Parameters of Different Metallic Glass Compositions for alpha, beta, gamma, n, and p Radiation",
+        "paper_doi": "10.1007/s11664-025-11830-w",
+        "sample_id": "BTC1",
+        "has_reference_coefficients": true,
+        "has_buildup_factors": false,
+        "reference_fingerprint": "f7e9d543b9f429b7deb9b6017f1cf72b1b31ef3721bb27b24482809b8b825b1f"
+      },
+      {
+        "study_file": "literature_benchmark_negm_mo0_glass_energy.json",
+        "paper_title": "Electronic polarizability, dielectric and gamma-ray shielding features of PbO-P2O5-Na2O-Al2O3 glasses doped with MoO3",
+        "paper_doi": "10.1007/s10854-020-04709-5",
+        "sample_id": "Mo0.0",
+        "has_reference_coefficients": true,
+        "has_buildup_factors": false,
+        "reference_fingerprint": "61612f76052a61baeeae1b5b111954b2d0073f700c9cac3c8cb10a73e931b10a"
+      },
+      {
+        "study_file": "literature_benchmark_negm_nio_lcns5_energy.json",
+        "paper_title": "A Comprehensive Investigation of the Impact of NiO on the Radiation Attenuation Characteristics of (CaO-Li2O-NiO-SiO2) Glass Structure",
+        "paper_doi": "10.1007/s11664-023-10833-9",
+        "sample_id": "LCNS5",
+        "has_reference_coefficients": false,
+        "has_buildup_factors": true,
+        "reference_fingerprint": "5357a48ea7d30c84fff14fedd779bbfb0107d03a3c74c8565f00ad9bbc86cab8"
+      }
+    ],
+    "dataset_fingerprint": "005a2152b0e194b3376998024a9abb0eb0846bc5c8ecb13efb54796b1a4b8c60",
+    "coverage": {
+      "study_count": 6,
+      "doi_coverage_ratio": 1.0,
+      "title_coverage_ratio": 1.0,
+      "sample_id_coverage_ratio": 1.0
+    }
+  },
+  "runtime_environment": {
+    "python_version": "3.12.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "manifest_count": 0,
+    "observed_execution_platforms": [],
+    "reproducibility_fingerprint": "53d41f1a607fccb00f32f25bfb9e98793b4fd4196fe254d7964d42f9f3544af4"
+  },
+  "study_validation": [
+    {
+      "study_file": "literature_benchmark_negm_atp_cdni_x30_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    },
+    {
+      "study_file": "literature_benchmark_negm_atp_cdpbo_x15_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    },
+    {
+      "study_file": "literature_benchmark_negm_atp_cufe_x30_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    },
+    {
+      "study_file": "literature_benchmark_negm_hmg_btc1_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    },
+    {
+      "study_file": "literature_benchmark_negm_mo0_glass_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    },
+    {
+      "study_file": "literature_benchmark_negm_nio_lcns5_energy.json",
+      "errors": 0,
+      "warnings": 1,
+      "is_valid": true,
+      "messages": [
+        {
+          "severity": "warning",
+          "path": "study_schema_version",
+          "message": "study_schema_version is missing. Add study_schema_version='1.0' for reproducible validation."
+        }
+      ]
+    }
+  ],
+  "runtime_validation": [
+    {
+      "result_set": "gamma_pe_bi2o3_composition_sweep",
+      "study_file": "gamma_pe_bi2o3_composition_sweep.json",
+      "status": "completed",
+      "benchmark_status": "unavailable",
+      "has_thresholds": false,
+      "metric_count": 0,
+      "run_count": 8,
+      "histories": 0,
+      "random_seed_present": false,
+      "provenance_manifest": false,
+      "literature_sources": {},
+      "summary_path": "d:\\projects\\ShieldLabG4\\tmp\\baseline_dev_results\\gamma_pe_bi2o3_composition_sweep\\validation_summary.json",
+      "metrics": {}
+    }
+  ],
+  "drift": {}
+}

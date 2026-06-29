@@ -1,0 +1,37 @@
+{
+  "study_schema_version": "1.0",
+  "name": "my_study",
+  "description": "New shielding study",
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [
+      1,
+      0,
+      0
+    ]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "G4_Pb",
+        "thickness_cm": 1.0,
+        "divisions": 5
+      }
+    ]
+  },
+  "materials": [],
+  "run": {
+    "histories": 10000,
+    "output_dir": "results/my_study",
+    "energy_grid": [
+      100,
+      300,
+      662,
+      1000,
+      1500
+    ]
+  }
+}

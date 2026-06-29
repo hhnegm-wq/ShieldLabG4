@@ -1,0 +1,10 @@
+# Azure Storage clients
+azure-identity>=1.17
+azure-storage-queue>=12.10
+azure-storage-blob>=12.20
+# Scientific stack required by shieldlab.io.runner subprocess
+numpy
+pandas>=2.0
+scipy
+matplotlib>=3.8
+openpyxl>=3.1

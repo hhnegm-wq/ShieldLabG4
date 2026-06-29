@@ -1,0 +1,44 @@
+{
+  "name": "Polyethylene / Bi2O3 Nanocomposite Energy Sweep",
+  "description": "30 wt% Bi2O3 nanoparticles dispersed in HDPE (C2H4) matrix, density 2.45 g/cm3. Energy sweep 100–1500 keV. Representative of polymer nanocomposite shielding panels.",
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "PE_Bi2O3_30wt",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "PE_Bi2O3_30wt",
+      "density_g_cm3": 2.45,
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.70,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "Bi2O3",
+            "weight_fraction": 0.30,
+            "label": "Bismuth oxide nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/gamma_pe_bi2o3_nanocomposite_sweep",
+    "histories": 50000,
+    "energy_grid": [100, 200, 300, 500, 662, 1000, 1250, 1500]
+  }
+}

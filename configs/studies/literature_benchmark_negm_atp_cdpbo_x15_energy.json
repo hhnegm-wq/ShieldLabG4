@@ -1,0 +1,75 @@
+{
+  "name": "literature_benchmark_negm_atp_cdpbo_x15_energy",
+  "description": "Curated benchmark from the CdO/PbO attapulgite nanocomposite paper using the highest-loading sample AT70Pb15Cd15.",
+  "materials": [
+    {
+      "name": "SLG_ATP_Cd15Pb15",
+      "density_g_cm3": 2.555,
+      "phase": "solid",
+      "formula_mass_fractions": {
+        "Mg5Si8O20(OH)2(H2O)4": 0.4,
+        "CdO": 0.3,
+        "PbO": 0.3
+      }
+    }
+  ],
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "SLG_ATP_Cd15Pb15",
+        "thickness_cm": 2,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 15000,
+    "energy_grid": [15, 20, 30, 60, 122, 356, 662, 1173, 1332, 2615, 5000, 10000, 15000],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/literature_benchmark_negm_atp_cdpbo_x15_energy"
+  },
+  "references": {
+    "paper_title": "Evaluation of shielding properties of a developed nanocomposite",
+    "paper_doi": "10.1088/1402-4896/ad3b48",
+    "sample_id": "AT70Pb15Cd15",
+    "acceptance_criteria": {
+      "metrics": {
+        "mass_attenuation_cm2_g_percent_difference": {
+          "mean_abs_max": 5.0,
+          "max_abs_max": 10.0
+        }
+      }
+    },
+    "coefficients": [
+      {
+        "energy": 15,
+        "energy_unit": "keV",
+        "source": "Negm et al. 2024, Table 3 / abstract range for AT70Pb15Cd15",
+        "linear_attenuation_cm_inv": null,
+        "mass_attenuation_cm2_g": 10.804
+      },
+      {
+        "energy": 100,
+        "energy_unit": "keV",
+        "source": "Negm et al. 2024, Table 3 (GEANT4 row for AT70Pb15Cd15)",
+        "linear_attenuation_cm_inv": null,
+        "mass_attenuation_cm2_g": 0.454
+      },
+      {
+        "energy": 15000,
+        "energy_unit": "keV",
+        "source": "Negm et al. 2024, abstract range for AT70Pb15Cd15",
+        "linear_attenuation_cm_inv": null,
+        "mass_attenuation_cm2_g": 0.023
+      }
+    ]
+  }
+}

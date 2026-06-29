@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-05-05T10:35:29.241341+00:00",
+  "project_root": "d:\\projects\\ShieldLabG4",
+  "equations": [
+    {
+      "name": "Mass attenuation mixture rule",
+      "equation": "(mu/rho) = sum_i w_i * (mu/rho)_i",
+      "notes": "NIST mixture rule for compounds and mixtures."
+    },
+    {
+      "name": "Transmission model",
+      "equation": "T = exp(-(mu/rho)*rho*x)",
+      "notes": "Narrow-beam attenuation model used for analytical comparison."
+    },
+    {
+      "name": "HVL and TVL",
+      "equation": "HVL = ln(2)/mu ; TVL = ln(10)/mu",
+      "notes": "Derived attenuation metrics for shielding studies."
+    },
+    {
+      "name": "Buildup GP model",
+      "equation": "B = 1 + (b-1)*(K^x - 1)/(K - 1)",
+      "notes": "GP-based buildup calculation for broad-beam corrections."
+    },
+    {
+      "name": "Normalized residual",
+      "equation": "r = (simulation - reference) / sigma_sim",
+      "notes": "Uncertainty-aware residual metric for benchmark diagnostics."
+    }
+  ],
+  "assumptions": {
+    "release_gate": "pass",
+    "q1_readiness": {
+      "no_study_validation_errors": true,
+      "no_failed_benchmark_sets": true,
+      "threshold_coverage_ratio": 0.0,
+      "provenance_coverage_ratio": 0.0,
+      "citation_coverage_ratio": 1.0,
+      "statistical_adequacy_ratio": 0.0,
+      "ready_for_submission": false
+    },
+    "runtime_result_sets": 2,
+    "threshold_backed_sets": 0,
+    "provenance_manifest_sets": 0,
+    "benchmark_status_counts": {
+      "unavailable": 2
+    }
+  },
+  "uncertainty_statements": [
+    "Transmission, reflection, and absorption uncertainty are propagated with binomial standard-error models.",
+    "95% confidence half-widths are reported for event fractions when count statistics are available.",
+    "Linear and mass attenuation uncertainty are propagated through delta-method conversion from transmission uncertainty.",
+    "Benchmark normalized residuals are reported as (simulation - literature) / simulation standard error.",
+    "Uncertainty interpretation must distinguish statistical, input, model, and literature components."
+  ],
+  "bibliography": [
+    {
+      "study_file": "literature_benchmark_negm_atp_cdni_x30_energy.json",
+      "title": "Exploring the potential of attapulgite clay composites containing intercalated nano-cadmium oxide and nano-nickel oxide for efficient radiation shielding applications",
+      "doi": "10.1016/j.radphyschem.2024.112149",
+      "sample_id": "AT40Cd30Ni30",
+      "doi_url": "https://doi.org/10.1016/j.radphyschem.2024.112149"
+    },
+    {
+      "study_file": "literature_benchmark_negm_atp_cdpbo_x15_energy.json",
+      "title": "Evaluation of shielding properties of a developed nanocomposite",
+      "doi": "10.1088/1402-4896/ad3b48",
+      "sample_id": "AT70Pb15Cd15",
+      "doi_url": "https://doi.org/10.1088/1402-4896/ad3b48"
+    },
+    {
+      "study_file": "literature_benchmark_negm_atp_cufe_x30_energy.json",
+      "title": "A new nanocomposite of copper oxide and magnetite intercalated into attapulgite clay",
+      "doi": "10.1016/j.radphyschem.2023.111398",
+      "sample_id": "AT40Fe30Cu30",
+      "doi_url": "https://doi.org/10.1016/j.radphyschem.2023.111398"
+    },
+    {
+      "study_file": "literature_benchmark_negm_hmg_btc1_energy.json",
+      "title": "Evaluation of Radiation Shielding Parameters of Different Metallic Glass Compositions for alpha, beta, gamma, n, and p Radiation",
+      "doi": "10.1007/s11664-025-11830-w",
+      "sample_id": "BTC1",
+      "doi_url": "https://doi.org/10.1007/s11664-025-11830-w"
+    },
+    {
+      "study_file": "literature_benchmark_negm_mo0_glass_energy.json",
+      "title": "Electronic polarizability, dielectric and gamma-ray shielding features of PbO-P2O5-Na2O-Al2O3 glasses doped with MoO3",
+      "doi": "10.1007/s10854-020-04709-5",
+      "sample_id": "Mo0.0",
+      "doi_url": "https://doi.org/10.1007/s10854-020-04709-5"
+    },
+    {
+      "study_file": "literature_benchmark_negm_nio_lcns5_energy.json",
+      "title": "A Comprehensive Investigation of the Impact of NiO on the Radiation Attenuation Characteristics of (CaO-Li2O-NiO-SiO2) Glass Structure",
+      "doi": "10.1007/s11664-023-10833-9",
+      "sample_id": "LCNS5",
+      "doi_url": "https://doi.org/10.1007/s11664-023-10833-9"
+    }
+  ],
+  "reference_coverage": {
+    "study_count": 6,
+    "doi_coverage_ratio": 1.0,
+    "title_coverage_ratio": 1.0,
+    "sample_id_coverage_ratio": 1.0
+  },
+  "artifacts": {
+    "source_release_report": "d:\\projects\\ShieldLabG4\\docs\\validation\\release_validation_report_latest.json",
+    "benchmark_table_csv": "d:\\projects\\ShieldLabG4\\docs\\validation\\methods_benchmark_table_20260505_103529.csv"
+  }
+}

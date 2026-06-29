@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "appNamePrefix": {
+      "value": "shieldlabg4-prod"
+    },
+    "appServiceSku": {
+      "value": "S1"
+    },
+    "jobsQueueName": {
+      "value": "simulation-jobs"
+    },
+    "inputContainerName": {
+      "value": "simulation-input"
+    },
+    "outputContainerName": {
+      "value": "simulation-output"
+    },
+    "enableEasyAuth": {
+      "value": true
+    },
+    "aadAuthority": {
+      "value": "https://login.microsoftonline.com/<tenant-id>/v2.0"
+    },
+    "aadClientId": {
+      "value": "<app-registration-client-id>"
+    },
+    "aadClientSecret": {
+      "value": "<app-registration-client-secret>"
+    }
+  }
+}

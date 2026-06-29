@@ -1,0 +1,62 @@
+{
+  "study_schema_version": "1.0",
+  "name": "Paper 3 - Regime A - HDPE/Bi2O3/WO3 ternary phi_each=0.10",
+  "description": "Regime-A (effective-medium) benchmark: HDPE/Bi2O3/WO3 ternary nanocomposite at phi_Bi2O3=0.10, phi_WO3=0.10 (total phi=0.20). Gives rho_eff=2.366 g/cm3 (37.62 wt% Bi2O3 + 30.26 wt% WO3 + 32.12 wt% HDPE). DUAL K-edges: Bi at 90.526 keV (straddles 80–100 keV) and W at 69.525 keV (straddles 50–80 keV). First true ternary nanocomposite in the paper-3 campaign; tests independent K-edge additivity.",
+  "paper3": {
+    "campaign": "paper3_nano_regimes",
+    "regime": "A",
+    "material_family": "HDPE_Bi2O3_WO3_ternary",
+    "target_figures": ["F_val_ternary", "F_cross_multi"],
+    "notes": "Ternary material: HDPE + Bi2O3 + WO3. Two fillers in nanocomposite block. phi_Bi2O3=0.10, phi_WO3=0.10. random_seed=24681."
+  },
+  "source": {
+    "particle": "gamma",
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 20,
+    "layers": [
+      {
+        "material": "P3_HDPE_Bi2O3_WO3_ternary",
+        "thickness_cm": 5.0,
+        "divisions": 10
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "P3_HDPE_Bi2O3_WO3_ternary",
+      "density_g_cm3": 2.366,
+      "phase": "solid",
+      "nanocomposite": {
+        "matrix": {
+          "formula": "C2H4",
+          "weight_fraction": 0.32122,
+          "label": "HDPE matrix"
+        },
+        "fillers": [
+          {
+            "formula": "Bi2O3",
+            "weight_fraction": 0.37616,
+            "label": "Bi2O3 nanoparticles"
+          },
+          {
+            "formula": "WO3",
+            "weight_fraction": 0.30262,
+            "label": "WO3 nanoparticles"
+          }
+        ]
+      }
+    }
+  ],
+  "run": {
+    "output_dir": "results/paper3/regime_a_hdpe_bi2o3_wo3_ternary",
+    "histories": 1000000,
+    "physics_list": "emlivermore",
+    "validation_mode": "benchmark_narrow_beam",
+    "random_seed": 24681,
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

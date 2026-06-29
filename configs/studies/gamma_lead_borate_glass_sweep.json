@@ -1,0 +1,40 @@
+{
+  "name": "gamma_lead_borate_glass_sweep",
+  "description": "Custom composition example: lead-borate glass shielding slab over a gamma energy sweep.",
+  "materials": [
+    {
+      "name": "SLG_LeadBorateGlass",
+      "density_g_cm3": 4.8,
+      "phase": "solid",
+      "mass_fractions": {
+        "Pb": 0.55,
+        "B": 0.12,
+        "O": 0.28,
+        "Si": 0.05
+      }
+    }
+  ],
+  "source": {
+    "particle": "gamma",
+    "energy": 662,
+    "energy_unit": "keV",
+    "direction": [1, 0, 0]
+  },
+  "geometry": {
+    "type": "slab",
+    "transverse_size_cm": 10,
+    "layers": [
+      {
+        "material": "SLG_LeadBorateGlass",
+        "thickness_cm": 2,
+        "divisions": 1
+      }
+    ]
+  },
+  "run": {
+    "histories": 3000,
+    "energy_grid": [100, 300, 662, 1000, 1500],
+    "physics_list": "emstandard_opt4",
+    "output_dir": "results/gamma_lead_borate_glass_sweep"
+  }
+}

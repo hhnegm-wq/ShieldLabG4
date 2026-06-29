@@ -1,0 +1,62 @@
+{
+  "study_id": "paper3_hdpe_bi2o3_wo3_ternary_regime_c_250nm",
+  "description": "Paper 3 Regime C – explicit RVE (G4MultiUnion), minimal feasible geometry for ternary HDPE/Bi2O3/WO3. 250-nm RVE (N~24 Bi2O3 spheres, r=25 nm) at phi_Bi2O3=0.10 in the full ternary effective medium (rho_eff=2.366 g/cm3). Bi2O3 spheres are used as the explicit filler; WO3 phase is absorbed into the effective medium. L/r = 10 satisfies minimum RVE criterion. Dual K-edges: Bi at 90.526 keV and W at 69.525 keV. 10M histories/point.",
+  "materials": [
+    {
+      "name": "P3_HDPE_Bi2O3_WO3_ternary",
+      "description": "HDPE/Bi2O3/WO3 ternary nanocomposite: phi_Bi2O3=0.10, phi_WO3=0.10; 37.62 wt% Bi2O3 + 30.26 wt% WO3 + 32.12 wt% HDPE; rho_eff=2.366 g/cm3",
+      "density_g_cm3": 2.366,
+      "nanocomposite": {
+        "matrix": {"formula": "C2H4", "weight_fraction": 0.32122},
+        "fillers": [
+          {"formula": "Bi2O3", "weight_fraction": 0.37616},
+          {"formula": "WO3", "weight_fraction": 0.30262}
+        ]
+      }
+    },
+    {
+      "name": "P3_HDPE_matrix",
+      "description": "HDPE matrix phase",
+      "density_g_cm3": 0.95,
+      "formula": "C2H4"
+    },
+    {
+      "name": "P3_Bi2O3_filler",
+      "description": "Bismuth oxide nanoparticle filler (explicit Bi2O3 spheres at phi=0.10)",
+      "density_g_cm3": 8.9,
+      "formula": "Bi2O3"
+    }
+  ],
+  "geometry": {
+    "type": "rve_multiunion",
+    "transverse_size_cm": 2.5e-5,
+    "layers": [
+      {
+        "material": "P3_HDPE_Bi2O3_WO3_ternary",
+        "thickness_cm": 2.5e-5,
+        "divisions": 1
+      }
+    ],
+    "rve": {
+      "effective_medium_material": "P3_HDPE_Bi2O3_WO3_ternary",
+      "matrix_material": "P3_HDPE_matrix",
+      "filler_material": "P3_Bi2O3_filler",
+      "side_nm": 250,
+      "particle_radius_nm": 25,
+      "volume_fraction": 0.10,
+      "max_particles": 30,
+      "seed": 88888
+    }
+  },
+  "source": {
+    "particle": "gamma",
+    "direction": [1, 0, 0],
+    "energy_unit": "keV"
+  },
+  "run": {
+    "physics_list": "emlivermore",
+    "histories": 10000000,
+    "output_dir": "results/paper3/regime_c_hdpe_bi2o3_wo3_ternary",
+    "energy_grid": [30, 50, 80, 100, 150, 356, 511, 662, 1173, 1332]
+  }
+}

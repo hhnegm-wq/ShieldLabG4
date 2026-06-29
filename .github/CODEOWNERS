@@ -1,0 +1,21 @@
+# Code owners for ShieldLab G4
+# These owners are requested for review on any pull request that
+# touches the matching paths. See:
+# https://docs.github.com/articles/about-code-owners
+
+# Default owner for everything in the repository
+*                           @hhnegm-wq
+
+# Physics / scientific core — require domain-owner review
+/python/shieldlab/physics/  @hhnegm-wq
+/src/                       @hhnegm-wq
+/include/                   @hhnegm-wq
+/app/                       @hhnegm-wq
+
+# Platform / infrastructure
+/infra/                     @hhnegm-wq
+/deploy/                    @hhnegm-wq
+/.github/                   @hhnegm-wq
+
+# Manuscripts and validation evidence
+/docs/validation/           @hhnegm-wq

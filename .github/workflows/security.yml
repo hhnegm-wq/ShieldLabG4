@@ -1,0 +1,118 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"   # weekly — Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # upload SARIF to GitHub Security tab
+
+jobs:
+  # ── Python dependency audit ────────────────────────────────────────────────
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package + audit tool + SBOM tool
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pip-audit cyclonedx-bom
+          python -m pip install -e ./python
+          python -m pip install -r api/requirements.txt
+          # requirements.appservice.txt uses -e flag which pip-audit handles via editable
+          python -m pip install PyJWT streamlit fastapi uvicorn
+
+      - name: Run pip-audit (fail on unfixed HIGH/CRITICAL)
+        # --desc on includes human-readable descriptions; --fix is NOT used (review before applying)
+        run: |
+          pip-audit --format json --output pip-audit.json || true
+          python - <<'EOF'
+          import json, sys
+          try:
+              data = json.load(open("pip-audit.json"))
+          except Exception as e:
+              print(f"Could not parse pip-audit output: {e}")
+              sys.exit(0)
+          # pip-audit v2 output schema: list of {name, version, vulns: [{id, fix_versions, ...}]}
+          vulns_found = []
+          deps = data if isinstance(data, list) else data.get("dependencies", [])
+          for dep in deps:
+              for v in dep.get("vulns", []):
+                  vulns_found.append(
+                      f"{dep.get('name','?')} {dep.get('version','?')}: "
+                      f"{v.get('id','?')} — {v.get('description','')[:120]}"
+                  )
+          if vulns_found:
+              print(f"\n{len(vulns_found)} vulnerability/vulnerabilities found:")
+              for line in vulns_found:
+                  print(f"  VULN: {line}")
+              sys.exit(1)
+          print("pip-audit: no known vulnerabilities found.")
+          EOF
+
+      - name: Upload pip-audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-results
+          path: pip-audit.json
+          retention-days: 90
+
+      - name: Generate CycloneDX SBOM (environment)
+        run: cyclonedx-py environment --output-format json --outfile sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx-json
+          path: sbom.json
+          retention-days: 365   # keep SBOM for one year per release cadence
+
+  # ── Container image scan (worker) ─────────────────────────────────────────
+  container-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build worker image
+        run: docker build -t shieldlab-worker:ci ./worker
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: shieldlab-worker:ci
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true   # skip CVEs with no upstream fix
+
+      - name: Upload Trivy SARIF to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-container
+
+  # ── Source secret / credential scan ───────────────────────────────────────
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history for gitleaks
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
