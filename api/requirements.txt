@@ -6,7 +6,7 @@ pandas
 scipy
 azure-identity>=1.17
 azure-storage-queue>=12.10
-azure-storage-blob>=12.20
+azure-storage-blob>=12.30.0
 # OpenTelemetry – tracing (Phase 2.4)
 opentelemetry-sdk>=1.24
 opentelemetry-exporter-otlp-proto-grpc>=1.24
