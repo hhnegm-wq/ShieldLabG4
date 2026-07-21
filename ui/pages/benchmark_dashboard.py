@@ -172,7 +172,7 @@ st.dataframe(
             "summary_path",
         ]
     ],
-    use_container_width=True,
+    width="stretch",
     hide_index=True,
 )
 
@@ -200,7 +200,7 @@ else:
 
     trend_plot = trend_df.set_index("generated_at")[["study_error_count", "failed_benchmark_sets"]]
     st.markdown("**Error and benchmark regression trend**")
-    st.line_chart(trend_plot, use_container_width=True)
+    st.line_chart(trend_plot, width="stretch")
 
     readiness_plot = trend_df.set_index("generated_at")[
         [
@@ -211,7 +211,7 @@ else:
         ]
     ]
     st.markdown("**Coverage trend for publication readiness**")
-    st.line_chart(readiness_plot, use_container_width=True)
+    st.line_chart(readiness_plot, width="stretch")
 
     display_trend = trend_df.copy()
     display_trend["generated_at"] = display_trend["generated_at"].dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -233,14 +233,14 @@ else:
                 "report_path",
             ]
         ],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
     st.download_button(
         "Download trend table (CSV)",
         data=trend_df.to_csv(index=False).encode("utf-8"),
         file_name="release_validation_trends.csv",
-        mime="text/csv", use_container_width=True,
+        mime="text/csv", width="stretch",
     )
 
 latest_report = _load_json(config.PROJECT_ROOT / "docs" / "validation" / "release_validation_report_latest.json")

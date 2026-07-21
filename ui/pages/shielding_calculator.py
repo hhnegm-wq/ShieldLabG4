@@ -365,7 +365,7 @@ with st.expander(str(copy["section_material"]), expanded=True):
             phase_rows = _phase_preview_rows(mat_dict_raw)
             if phase_rows:
                 st.markdown("**Effective phase mixing used in the physics model**")
-                st.dataframe(pd.DataFrame(phase_rows), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(phase_rows), width="stretch", hide_index=True)
 
             mass_fractions = resolve_material_mass_fractions(mat_dict_raw)
 
@@ -375,7 +375,7 @@ with st.expander(str(copy["section_material"]), expanded=True):
                 "wt %": f"{wf * 100:.3f}",
             } for el, wf in sorted(mass_fractions.items(), key=lambda x: -x[1])]
             st.markdown("**Elemental Mass Fractions**")
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=220)
+            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True, height=220)
 
             desc = material_descriptors(mat_name, mass_fractions, density)
             c1, c2, c3, c4, c5 = st.columns(5)
@@ -414,7 +414,7 @@ with st.expander(str(copy["section_source"]), expanded=True):
             'Energy (keV)': energies_MeV * 1000,
             'Relative Intensity': intensities,
         })
-        st.dataframe(df_src, use_container_width=True, hide_index=True, height=120)
+        st.dataframe(df_src, width="stretch", hide_index=True, height=120)
 
     elif energy_mode == "Single energy":
         ec1, ec2 = st.columns([2, 1])
@@ -518,7 +518,7 @@ with st.expander(str(copy["section_shield"]), expanded=True):
                                                     min_value=0.001, format="%.4f",
                                                     key=f"sc_l_t{i}", label_visibility="collapsed")
         with c5:
-            if st.button("✕", key=f"sc_l_rm{i}", help="Remove layer", use_container_width=True):
+            if st.button("✕", key=f"sc_l_rm{i}", help="Remove layer", width="stretch"):
                 return None
         return lyr
 
@@ -533,7 +533,7 @@ with st.expander(str(copy["section_shield"]), expanded=True):
             new_layers.append(result)
     st.session_state.sc_layers = new_layers
 
-    if st.button("+ Add layer", use_container_width=True):
+    if st.button("+ Add layer", width="stretch"):
         st.session_state.sc_layers.append({"name": f"Layer {len(st.session_state.sc_layers)+1}",
                                              "formula": "Fe", "density_g_cm3": 7.87,
                                              "thickness_cm": 2.0})
@@ -544,7 +544,7 @@ calc_ready = (mass_fractions is not None) and (energies_MeV is not None) and (no
 
 c_btn, c_hint = st.columns([1, 4])
 with c_btn:
-    calc_btn = st.button(str(copy["calc_button"]), type="primary", use_container_width=True,
+    calc_btn = st.button(str(copy["calc_button"]), type="primary", width="stretch",
                           disabled=not calc_ready)
 with c_hint:
     if not calc_ready:
@@ -662,7 +662,7 @@ if p_type == "neutral" and particle == "neutron":
         'Transmission': T_n,
         'RPE (%)': (1 - T_n) * 100,
     })
-    st.dataframe(df_n.round(6), use_container_width=True, hide_index=True)
+    st.dataframe(df_n.round(6), width="stretch", hide_index=True)
 
     # Plot
     fig_n, ax_n = __import__('matplotlib.pyplot', fromlist=['subplots']).subplots(figsize=(8, 4))
@@ -696,7 +696,7 @@ if p_type == "neutral" and particle == "neutron":
                 'Σ_R contribution (cm⁻¹)': f"{contrib:.5f}",
             })
     st.subheader(str(copy["neutron_element_subheader"]))
-    st.dataframe(pd.DataFrame(rows_fn), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows_fn), width="stretch", hide_index=True)
 
 else:
     with st.spinner(str(copy["calc_spinner"])):
@@ -753,7 +753,7 @@ else:
                      'HVL (cm)', 'TVL (cm)', 'MFP (cm)']
         st.dataframe(
             df_shield[core_cols].round(6),
-            use_container_width=True, hide_index=True,
+            width="stretch", hide_index=True,
         )
 
         # Extended Phy-X parameters (energy-dependent)
@@ -772,7 +772,7 @@ else:
                 fmt_ext.update({c: '{:.4f}' for c in ext_cols if c not in fmt_ext})
                 st.dataframe(
                     df_shield[ext_cols].style.format(fmt_ext),
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                 )
                 if len(E_arr) > 1 and 'Zeff' in df_shield.columns:
                     import matplotlib.pyplot as _plt
@@ -800,7 +800,7 @@ else:
             if t_cols:
                 st.dataframe(
                     df_shield[['Energy_keV'] + t_cols].round(6),
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                 )
 
         # Summary metrics at first energy
@@ -853,7 +853,7 @@ else:
             for c in cols_show:
                 if c in xcom_data:
                     df_xc[rename[c]] = xcom_data[c]
-            st.dataframe(df_xc.round(6), use_container_width=True, hide_index=True)
+            st.dataframe(df_xc.round(6), width="stretch", hide_index=True)
 
             # XCOM plot
             fig_xcom = plot_mac_vs_energy(
@@ -889,7 +889,7 @@ else:
                     'R (Compton/Total)':  _zeq['R'],
                     'Zeq':                _zeq['Zeq'],
                 })
-                st.dataframe(df_zeq.round(5), use_container_width=True, hide_index=True)
+                st.dataframe(df_zeq.round(5), width="stretch", hide_index=True)
                 if len(E_arr) > 1:
                     import matplotlib.pyplot as _pltZ
                     _fz, _axz = _pltZ.subplots(1, 2, figsize=(12, 3.5))
@@ -936,7 +936,7 @@ else:
                 {"Parameter": "Neff (el/cm³, static)",             "Value": f"{desc_all['Neff_electrons_cm3']:.4e}"},
                 {"Parameter": "Electron density (el/cm³)",         "Value": f"{desc_all['electron_density_cm3']:.4e}"},
             ]
-            st.dataframe(pd.DataFrame(d_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(d_rows), width="stretch", hide_index=True)
 
             # Elemental composition table: Wi (mass) + Fi (mole) fractions
             st.markdown("**Elemental composition:**")
@@ -951,7 +951,7 @@ else:
                     "Fi (mole fraction)": f"{fi:.6f}" if np.isfinite(fi) else "N/A",
                     "Fi %": f"{fi*100:.3f}" if np.isfinite(fi) else "N/A",
                 })
-            st.dataframe(pd.DataFrame(el_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(el_rows), width="stretch", hide_index=True)
 
             # FNRCS
             sigma_R = compute_fnrcs(mf, rho)
@@ -1011,7 +1011,7 @@ else:
             st.dataframe(
                 df_tv[['Thickness (cm)', _mx_col, 'T (narrow beam)',
                         'T (with buildup)', 'RPE% (narrow)', 'EBF']].round(5),
-                use_container_width=True, hide_index=True, height=380,
+                width="stretch", hide_index=True, height=380,
             )
 
         # HVL/TVL vs energy plot
@@ -1163,7 +1163,7 @@ else:
 
                         # Per-layer table
                         df_ml = pd.DataFrame(ml_result['layers'])
-                        st.dataframe(df_ml.round(5), use_container_width=True, hide_index=True)
+                        st.dataframe(df_ml.round(5), width="stretch", hide_index=True)
 
                         # Multilayer geometry figure
                         geo_multi_layers = [
@@ -1220,7 +1220,7 @@ else:
 
         if "df_estar" in st.session_state:
             df_estar = st.session_state["df_estar"]
-            st.dataframe(df_estar.style.format("{:.4g}"), use_container_width=True)
+            st.dataframe(df_estar.style.format("{:.4g}"), width="stretch")
 
             import matplotlib.pyplot as plt_estar_mod
             fig_es, (ax_sp, ax_rng) = plt_estar_mod.subplots(1, 2, figsize=(12, 4))
@@ -1313,7 +1313,7 @@ else:
                     icon="⚠️",
                 )
 
-            st.dataframe(df_ion.style.format("{:.4g}"), use_container_width=True)
+            st.dataframe(df_ion.style.format("{:.4g}"), width="stretch")
 
             import matplotlib.pyplot as plt_ion_mod
             fig_ion, (ax_isp, ax_irng) = plt_ion_mod.subplots(1, 2, figsize=(12, 4))
@@ -1445,7 +1445,7 @@ else:
                     _inv_mac_sel = mac_arr
                     _df_inv = required_thickness_table(_inv_E_sel, _inv_mac_sel, _inv_rho)
                     st.dataframe(_df_inv.style.format(precision=4),
-                                 use_container_width=True, hide_index=True)
+                                 width="stretch", hide_index=True)
                     _inv_csv = _df_inv.to_csv(index=False)
                     st.download_button(
                         "Download CSV",
@@ -1489,7 +1489,7 @@ else:
         col_xl, col_pdf = st.columns(2)
 
         with col_xl:
-            if st.button("Generate Excel Report", type="primary", use_container_width=True):
+            if st.button("Generate Excel Report", type="primary", width="stretch"):
                 buf = io.BytesIO()
                 with pd.ExcelWriter(buf, engine='openpyxl') as xw:
                     # Sheet 1: Shielding parameters
@@ -1550,7 +1550,7 @@ else:
                     "Download Excel Report",
                     data=buf,
                     file_name=f"shielding_{name.replace(' ','_')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True,
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", width="stretch",
                 )
 
         # CSV download (always free)
@@ -1569,7 +1569,7 @@ else:
             if _pdf_disabled:
                 st.info("PDF report is a Pro feature. Upgrade to download.")
             if st.button("Generate PDF Report", type="secondary",
-                          disabled=_pdf_disabled, use_container_width=True):
+                          disabled=_pdf_disabled, width="stretch"):
                 with st.spinner("Generating PDF..."):
                     try:
                         from shieldlab.report.pdf_report import pdf_bytes as _pdf_bytes
@@ -1610,7 +1610,7 @@ else:
                             "Download PDF Report",
                             data=_pdf,
                             file_name=f"ShieldLabG4_Report_{name.replace(' ','_')}.pdf",
-                            mime="application/pdf", use_container_width=True,
+                            mime="application/pdf", width="stretch",
                         )
                     except Exception as _exc:
                         st.error(f"PDF generation failed: {_exc}")

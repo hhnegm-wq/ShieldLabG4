@@ -224,7 +224,7 @@ T_arr = np.linspace(0.5, float(t_max), 40)
 st.divider()
 run_btn = st.button(
     "Compare Materials", type="primary",
-    disabled=len(mat_specs) < 2, use_container_width=True,
+    disabled=len(mat_specs) < 2, width="stretch",
 )
 
 auto_run_bare = _is_bare_mode() and "cmp_results" not in st.session_state and len(mat_specs) >= 2
@@ -491,7 +491,7 @@ with tab_neutron:
             "TVL_n (cm)":     f"{r['tvl_n']:.3f}",
             "MFP_n (cm)":     f"{1/r['sigma_R']:.3f}" if r["sigma_R"] > 0 else "n/a",
         })
-    st.dataframe(pd.DataFrame(neutron_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(neutron_rows), width="stretch", hide_index=True)
 
     # Bar chart: Sigma_R
     fig_fn, ax_fn = plt.subplots(figsize=(8, 3.5))
@@ -566,7 +566,7 @@ with tab_rank:
         rank_rows.append(row)
 
     df_rank = pd.DataFrame(rank_rows)
-    st.dataframe(df_rank, use_container_width=True, hide_index=True)
+    st.dataframe(df_rank, width="stretch", hide_index=True)
 
     # Radar chart (spider plot) for normalised scores
     st.markdown("---")
@@ -635,7 +635,7 @@ with tab_table:
                  "HVL (cm)", "TVL (cm)", "MFP (cm)"]
     st.dataframe(
         r_sel["df"][[c for c in cols_show if c in r_sel["df"].columns]].round(6),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
     # Combined CSV export (all materials, key columns)

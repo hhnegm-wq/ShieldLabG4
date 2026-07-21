@@ -133,7 +133,7 @@ with tab_registry:
             }
         )
 
-    st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(table_rows), width="stretch", hide_index=True)
     st.download_button(
         "Download Benchmark Registry",
         REGISTRY_PATH.read_text(encoding="utf-8") if REGISTRY_PATH.exists() else "{}",
@@ -189,7 +189,7 @@ with tab_ready:
                 "Study File": entry.get("study_file"),
             }
         )
-    st.dataframe(pd.DataFrame(ready_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(ready_rows), width="stretch", hide_index=True)
 
     for entry in entries:
         if entry.get("status") not in {"ready", "provisional"}:
@@ -212,18 +212,18 @@ with tab_coverage:
     )
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.dataframe(_coverage_frame(inventory_summary.get("material_classes"), "Material Class"), use_container_width=True, hide_index=True)
+        st.dataframe(_coverage_frame(inventory_summary.get("material_classes"), "Material Class"), width="stretch", hide_index=True)
     with c2:
-        st.dataframe(_coverage_frame(inventory_summary.get("radiation_types"), "Radiation"), use_container_width=True, hide_index=True)
+        st.dataframe(_coverage_frame(inventory_summary.get("radiation_types"), "Radiation"), width="stretch", hide_index=True)
     with c3:
-        st.dataframe(_coverage_frame(inventory_summary.get("figure_families"), "Figure Family"), use_container_width=True, hide_index=True)
+        st.dataframe(_coverage_frame(inventory_summary.get("figure_families"), "Figure Family"), width="stretch", hide_index=True)
 
     curated_by_status = _coverage_frame(
         {status: sum(1 for entry in entries if entry.get("status") == status) for status in sorted({entry.get("status") for entry in entries})},
         "Curated Status",
     )
     st.markdown("---")
-    st.dataframe(curated_by_status, use_container_width=True, hide_index=True)
+    st.dataframe(curated_by_status, width="stretch", hide_index=True)
 
 with tab_notes:
     render_panel_header(

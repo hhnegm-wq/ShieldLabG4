@@ -223,7 +223,7 @@ with tab_table:
         df_table["Reduction factor"] = np.where(
             H_shld > 0, np.round(H_free / H_shld, 1), float("inf")
         )
-    st.dataframe(df_table, use_container_width=True)
+    st.dataframe(df_table, width="stretch")
 
     _csv = df_table.to_csv(index=False)
     st.download_button("Download CSV", _csv,
@@ -261,7 +261,7 @@ with tab_kerma:
         {"Isotope": k, "Gamma_k [uGy m^2/(MBq h)]": v}
         for k, v in GAMMA_K.items()
     ])
-    st.dataframe(df_gk, use_container_width=True)
+    st.dataframe(df_gk, width="stretch")
 
 # Tab 4: ICRP-74 h*(10) coefficients
 with tab_icrp:
@@ -304,7 +304,7 @@ with tab_icrp:
         "Energy (keV)": (_ICRP74_E * 1000).round(1),
         "h*(10) [pSv·cm²]": _ICRP74_H,
     })
-    st.dataframe(df_icrp, use_container_width=True)
+    st.dataframe(df_icrp, width="stretch")
 
 
 

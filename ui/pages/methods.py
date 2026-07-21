@@ -54,7 +54,7 @@ with st.expander("Manuscript Methods Export Pack", expanded=False):
     st.caption(
         "Generate publication-ready methods artifacts including equations, assumptions context, benchmark table, and uncertainty statements."
     )
-    if st.button("Generate Methods Pack", type="primary", use_container_width=True):
+    if st.button("Generate Methods Pack", type="primary", width="stretch"):
         outputs = generate_methods_export_pack(
             project_root=config.PROJECT_ROOT,
             output_dir=config.PROJECT_ROOT / "docs" / "validation",
@@ -79,7 +79,7 @@ with st.expander(str(copy["quick_reference"]), expanded=True):
                 {"Module": "Neutrons", "Core model": "Fast removal cross-section", "Primary source": "Blizard-Abbott / Shultis & Faw", "Validation": "Mixture-rule comparisons"},
                 {"Module": "Data libraries", "Core model": "Curated compositions + decay data", "Primary source": "ICRU / PNNL / ICRP / ENSDF", "Validation": "Library integrity checks"},
             ]
-        ), use_container_width=True,
+        ), width="stretch",
         hide_index=True,
     )
 

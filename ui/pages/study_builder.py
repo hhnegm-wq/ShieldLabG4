@@ -157,7 +157,7 @@ col_tmpl, col_load = st.columns([4, 1])
 with col_tmpl:
     selected_tmpl = st.selectbox("Template", t_names, label_visibility="collapsed")
 with col_load:
-    if st.button("Load", use_container_width=True) and selected_tmpl != "new study":
+    if st.button("Load", width="stretch") and selected_tmpl != "new study":
         st.session_state.study_json_text = (config.STUDIES_DIR / selected_tmpl).read_text(encoding="utf-8")
         st.rerun()
 
@@ -316,7 +316,7 @@ with tab_mat:
         phase_rows = _phase_preview_rows(material_dict)
         if phase_rows:
             st.markdown("**Effective phase mixing used in the physics model**")
-            st.dataframe(pd.DataFrame(phase_rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(phase_rows), width="stretch", hide_index=True)
 
         prev_col, desc_col = st.columns(2)
         mf = None
@@ -326,7 +326,7 @@ with tab_mat:
                 mf = resolve_material_mass_fractions(material_dict)
                 rows = [{"Element": el, "Mass Fraction": f"{wf:.6f}", "wt %": f"{wf*100:.3f}"}
                         for el, wf in sorted(mf.items(), key=lambda x: -x[1])]
-                st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=220)
+                st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True, height=220)
             except Exception as exc:
                 st.warning(f"Preview error: {exc}")
         with desc_col:
@@ -342,14 +342,14 @@ with tab_mat:
                         {"Parameter": "N_eff (e⁻/cm³)",    "Value": f"{desc['Neff_electrons_cm3']:.4e}"},
                         {"Parameter": "Electron density",  "Value": f"{desc['electron_density_cm3']:.4e}"},
                     ]
-                    st.dataframe(pd.DataFrame(rows2), use_container_width=True, hide_index=True, height=220)
+                    st.dataframe(pd.DataFrame(rows2), width="stretch", hide_index=True, height=220)
                 except Exception as exc:
                     st.warning(f"Descriptor error: {exc}")
 
         st.markdown("---")
         add_col, info_col = st.columns([1, 3])
         with add_col:
-            do_add = st.button("Add to Study JSON", type="primary", use_container_width=True)
+            do_add = st.button("Add to Study JSON", type="primary", width="stretch")
         with info_col:
             st.caption("Appends this material to the `materials[]` array in the JSON Editor. Reference it by name in geometry layers.")
         if do_add:
@@ -408,7 +408,7 @@ with tab_guided:
             g_sweep = st.selectbox("Sweep type", ["Energy sweep", "Thickness sweep", "Single run"])
         g_energies_str = st.text_input("Energy grid (keV, comma-separated)", value="100, 300, 662, 1000, 1500")
         g_thick_str = st.text_input("Thickness grid (cm, comma-separated)", value="0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0")
-        submitted = st.form_submit_button("Apply to JSON Editor", use_container_width=True, type="primary")
+        submitted = st.form_submit_button("Apply to JSON Editor", width="stretch", type="primary")
 
     if submitted:
         safe_name = g_name.strip().replace(" ", "_").lower()
@@ -461,13 +461,13 @@ with tab_json:
                 st.success("Valid, no issues")
             if issues:
                 st.dataframe(issues_to_frame(issues)[["severity","path","message"]],
-                             use_container_width=True, hide_index=True, height=170)
+                             width="stretch", hide_index=True, height=170)
             if study_obj.get("materials"):
                 st.markdown("**Material Descriptors**")
                 try:
                     desc_df = descriptors_from_study(study_obj)
                     st.dataframe(desc_df[["material","density_g_cm3","molar_mass_g_mol","Zeff_3p5","Neff_electrons_cm3"]].round(4),
-                                 use_container_width=True, hide_index=True)
+                                 width="stretch", hide_index=True)
                 except Exception as exc:
                     st.warning(f"Descriptor preview unavailable: {exc}")
         except json.JSONDecodeError as e:
@@ -484,7 +484,7 @@ col_name, col_save, col_dl = st.columns([3, 1, 1])
 with col_name:
     save_name = st.text_input("Filename", value=_default_fname, label_visibility="collapsed")
 with col_save:
-    if st.button("Save to studies/", use_container_width=True):
+    if st.button("Save to studies/", width="stretch"):
         try:
             parsed = json.loads(st.session_state.study_json_text)
             (config.STUDIES_DIR / save_name).write_text(json.dumps(parsed, indent=2), encoding="utf-8")
@@ -493,7 +493,7 @@ with col_save:
             st.error("Fix JSON errors before saving.")
 with col_dl:
     st.download_button("Download", data=st.session_state.study_json_text,
-                       file_name=save_name, mime="application/json", use_container_width=True)
+                       file_name=save_name, mime="application/json", width="stretch")
 
 
 

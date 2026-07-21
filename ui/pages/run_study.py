@@ -216,7 +216,7 @@ if study_obj is None:
 else:
     col_vbtn, _ = st.columns([1, 3])
     with col_vbtn:
-        do_validate = st.button(str(copy["validate_button"]), use_container_width=True)
+        do_validate = st.button(str(copy["validate_button"]), width="stretch")
 
     if do_validate:
         issues = validate_study(study_obj)
@@ -231,7 +231,7 @@ else:
         if issues:
             st.dataframe(
                 issues_to_frame(issues)[["severity", "path", "message"]],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -240,7 +240,7 @@ else:
     st.subheader(str(copy["execute_heading"]))
     col_rbtn, _ = st.columns([1, 3])
     with col_rbtn:
-        do_run = st.button(str(copy["run_button"]), type="primary", use_container_width=True)
+        do_run = st.button(str(copy["run_button"]), type="primary", width="stretch")
 
     if do_run:
         try:
@@ -360,11 +360,11 @@ else:
                                 from PIL import Image
                                 st.image(
                                     Image.open(str(p)),
-                                    use_container_width=True,
+                                    width="stretch",
                                     caption=p.stem.replace("_", " "),
                                 )
                             except Exception:
-                                st.image(str(p), use_container_width=True, caption=p.stem)
+                                st.image(str(p), width="stretch", caption=p.stem)
 
                 st.info(
                     str(copy["result_saved_message"]).format(result_dir=result_dir.name)

@@ -46,8 +46,8 @@ OKABE_ITO = [
 # ---------------------------------------------------------------------------
 JOURNAL_PRESETS: dict[str, dict] = {
     # ── WEB DISPLAY ────────────────────────────────────────────────
-    # ISIP-tuned web-display preset. use_container_width=True renders this
-    # at native screen resolution; dpi only affects save-to-disk export.
+    # ISIP-tuned web-display preset. Full-width (width="stretch") rendering
+    # shows this at native screen resolution; dpi only affects save-to-disk export.
     "shieldlab_web": {
         "font.size": 11,
         "axes.titlesize": 12,

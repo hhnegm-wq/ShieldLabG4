@@ -128,11 +128,11 @@ def _export_buttons(fig, basename: str, key: str) -> None:
     """Render PNG + PDF download buttons for a matplotlib figure."""
     st.download_button(
         "⬇ PNG", _fig_to_png(fig), f"{basename}.png", "image/png",
-        key=f"{key}_png", use_container_width=True,
+        key=f"{key}_png", width="stretch",
     )
     st.download_button(
         "⬇ PDF", _fig_to_pdf(fig), f"{basename}.pdf", "application/pdf",
-        key=f"{key}_pdf", use_container_width=True,
+        key=f"{key}_pdf", width="stretch",
     )
 
 
@@ -288,7 +288,7 @@ with tab_analysis:
         finish_shieldlab_figure(fig1)
         col1, col2 = st.columns([4, 1])
         with col1:
-            st.pyplot(fig1, use_container_width=True)
+            st.pyplot(fig1, width="stretch")
         with col2:
             st.markdown("**Export**")
             _export_buttons(fig1, f"{selected_name}_T_mu_vs_E", "fig1")
@@ -306,7 +306,7 @@ with tab_analysis:
             finish_shieldlab_figure(fig2)
             col3, col4 = st.columns([4, 1])
             with col3:
-                st.pyplot(fig2, use_container_width=True)
+                st.pyplot(fig2, width="stretch")
             with col4:
                 st.markdown("**Export**")
                 _export_buttons(fig2, f"{selected_name}_HVL_TVL_vs_E", "fig2")
@@ -360,7 +360,7 @@ with tab_analysis:
             finish_shieldlab_figure(fig3)
             col5, col6 = st.columns([4, 1])
             with col5:
-                st.pyplot(fig3, use_container_width=True)
+                st.pyplot(fig3, width="stretch")
             with col6:
                 st.markdown("**Export**")
                 _export_buttons(fig3, f"{selected_name}_MAC_vs_E", "fig3")
@@ -381,7 +381,7 @@ with tab_analysis:
                             st.metric("Max |MAC residual| / σ", f"{normalized.abs().max():.2f}")
                 st.dataframe(
                     comparison_df.round(5),
-                    use_container_width=True,
+                    width="stretch",
                     hide_index=True,
                 )
 
@@ -400,7 +400,7 @@ with tab_analysis:
                             "Threshold max |diff| (%)": thresholds.get("max_abs_max"),
                         })
                     st.markdown("**Benchmark residual summary**")
-                    st.dataframe(pd.DataFrame(bench_rows).round(4), use_container_width=True, hide_index=True)
+                    st.dataframe(pd.DataFrame(bench_rows).round(4), width="stretch", hide_index=True)
 
                 normalized_cols = [
                     column
@@ -428,7 +428,7 @@ with tab_analysis:
                     if column in df_e.columns:
                         uncertainty_cols.append(column)
                 st.markdown("**Monte Carlo uncertainty summary**")
-                st.dataframe(df_e[uncertainty_cols].round(6), use_container_width=True, hide_index=True)
+                st.dataframe(df_e[uncertainty_cols].round(6), width="stretch", hide_index=True)
 
         fig4, ax4 = plt.subplots()
         ax4.stackplot(E, T, R, A,
@@ -443,7 +443,7 @@ with tab_analysis:
         finish_shieldlab_figure(fig4)
         col7, col8 = st.columns([4, 1])
         with col7:
-            st.pyplot(fig4, use_container_width=True)
+            st.pyplot(fig4, width="stretch")
         with col8:
             st.markdown("**Export**")
             _export_buttons(fig4, f"{selected_name}_fractions_vs_E", "fig4")
@@ -460,7 +460,7 @@ with tab_analysis:
             finish_shieldlab_figure(fig5)
             col9, col10 = st.columns([4, 1])
             with col9:
-                st.pyplot(fig5, use_container_width=True)
+                st.pyplot(fig5, width="stretch")
             with col10:
                 st.markdown("**Export**")
                 _export_buttons(fig5, f"{selected_name}_MFP_vs_E", "fig5")
@@ -555,7 +555,7 @@ with tab_analysis:
 
                 col11, col12 = st.columns([4, 1])
                 with col11:
-                    st.pyplot(fig6, use_container_width=True)
+                    st.pyplot(fig6, width="stretch")
                 with col12:
                     st.markdown("**Export**")
                     _export_buttons(fig6, f"{selected_name}_literature_buildup", "fig6")
@@ -564,7 +564,7 @@ with tab_analysis:
                 if not bdf.empty:
                     st.dataframe(
                         bdf[["energy", "energy_unit", "zeq", "EBF (literature)", "EABF (literature)"]].round(6),
-                        use_container_width=True,
+                        width="stretch",
                         hide_index=True,
                     )
 
@@ -579,7 +579,7 @@ with tab_analysis:
                     ]
                     cols = [c for c in cols if c in mc_df.columns]
                     st.markdown("**Monte Carlo buildup observables**")
-                    st.dataframe(mc_df[cols].round(6), use_container_width=True, hide_index=True)
+                    st.dataframe(mc_df[cols].round(6), width="stretch", hide_index=True)
 
                 if not bdf.empty and not mc_df.empty and "mc_buildup_observable_energy" in mc_df.columns:
                     if buildup_cmp_df.empty:
@@ -616,7 +616,7 @@ with tab_analysis:
                             st.success("Buildup residual metric: passed configured acceptance limits.")
                         elif metric_status == "failed":
                             st.error("Buildup residual metric: failed configured acceptance limits.")
-                        st.dataframe(cmp.round(6), use_container_width=True, hide_index=True)
+                        st.dataframe(cmp.round(6), width="stretch", hide_index=True)
                     else:
                         st.info("MC buildup observable file is present, but no exact energy matches with literature buildup coefficients were found.")
 
@@ -683,7 +683,7 @@ with tab_analysis:
         finish_shieldlab_figure(fig6)
         col_t1, col_t2 = st.columns([4, 1])
         with col_t1:
-            st.pyplot(fig6, use_container_width=True)
+            st.pyplot(fig6, width="stretch")
         with col_t2:
             st.markdown("**Export**")
             _export_buttons(fig6, f"{selected_name}_thickness_sweep", "fig6")
@@ -702,7 +702,7 @@ with tab_analysis:
             ]:
                 if column in df_t.columns:
                     uncertainty_cols_t.append(column)
-            st.dataframe(df_t[uncertainty_cols_t].round(6), use_container_width=True, hide_index=True)
+            st.dataframe(df_t[uncertainty_cols_t].round(6), width="stretch", hide_index=True)
             st.caption("Thickness-sweep uncertainty follows the same binomial-count and delta-method propagation used for the energy sweep.")
 
     _single_run = result_path / "run_summary.csv"
@@ -745,7 +745,7 @@ with tab_analysis:
             finish_shieldlab_figure(fig7)
             col_sr1, col_sr2 = st.columns([2, 2])
             with col_sr1:
-                st.pyplot(fig7, use_container_width=True)
+                st.pyplot(fig7, width="stretch")
                 _export_buttons(fig7, f"{selected_name}_transport_fractions", "fig7")
             with col_sr2:
                 st.markdown("**Key results:**")
@@ -759,7 +759,7 @@ with tab_analysis:
                 ]
                 st.dataframe(
                     pd.DataFrame(kpi_rows, columns=["Quantity", "Value"]),
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                 )
             plt.close(fig7)
 
@@ -828,7 +828,7 @@ with tab_analysis:
             finish_shieldlab_figure(fig_c1)
             col_c1, col_c2 = st.columns([4, 1])
             with col_c1:
-                st.pyplot(fig_c1, use_container_width=True)
+                st.pyplot(fig_c1, width="stretch")
             with col_c2:
                 st.markdown("**Export**")
                 _export_buttons(fig_c1, f"{selected_name}_composition_sweep", "fig_cs")
@@ -847,7 +847,7 @@ with tab_analysis:
                 ]:
                     if column in df_c.columns:
                         uncertainty_cols_c.append(column)
-                st.dataframe(df_c[uncertainty_cols_c].round(6), use_container_width=True, hide_index=True)
+                st.dataframe(df_c[uncertainty_cols_c].round(6), width="stretch", hide_index=True)
                 st.caption("Composition-sweep uncertainty follows the same binomial-count and delta-method propagation used for the energy sweep.")
         else:
             st.info("No simulation CSV results found in this folder. Run a study first.")
@@ -911,11 +911,11 @@ with tab_layer:
 
             fig_l.suptitle(f"Layer Energy Deposition - {folder_tag}", fontweight="bold")
             finish_shieldlab_figure(fig_l)
-            st.pyplot(fig_l, use_container_width=True)
+            st.pyplot(fig_l, width="stretch")
             _export_buttons(fig_l, f"{folder_tag}_layer_edep", f"led_{folder_tag}")
             plt.close(fig_l)
 
-            st.dataframe(df_l.round(6), use_container_width=True, hide_index=True)
+            st.dataframe(df_l.round(6), width="stretch", hide_index=True)
             st.markdown("---")
 
 # TAB 3 - Secondary Particle Tally
@@ -993,7 +993,7 @@ with tab_sec:
             finish_shieldlab_figure(fig_s)
             col_s1, col_s2 = st.columns([5, 1])
             with col_s1:
-                st.pyplot(fig_s, use_container_width=True)
+                st.pyplot(fig_s, width="stretch")
             with col_s2:
                 st.markdown("**Export**")
                 _export_buttons(fig_s, f"{folder_tag}_secondaries", f"sec_{folder_tag}")
@@ -1009,7 +1009,7 @@ with tab_sec:
             )
             st.dataframe(
                 df_sec.style.background_gradient(subset=["count"], cmap="Blues"),
-                use_container_width=True, hide_index=True,
+                width="stretch", hide_index=True,
             )
             st.markdown("---")
 
@@ -1036,9 +1036,9 @@ with tab_figs:
                 with cols[j]:
                     try:
                         from PIL import Image
-                        st.image(Image.open(str(p)), use_container_width=True)
+                        st.image(Image.open(str(p)), width="stretch")
                     except Exception:
-                        st.image(str(p), use_container_width=True)
+                        st.image(str(p), width="stretch")
                     c_cap, c_dl = st.columns([3, 1])
                     c_cap.caption(p.stem.replace("_", " ").title())
                     c_dl.download_button(
@@ -1065,7 +1065,7 @@ with tab_data:
         if csv_path.exists():
             st.markdown(f"**{label}** - `{csv_name}`")
             df_sw = pd.read_csv(csv_path)
-            st.dataframe(df_sw.round(6), use_container_width=True, hide_index=True)
+            st.dataframe(df_sw.round(6), width="stretch", hide_index=True)
             found_sweep = True
 
     run_summaries = sorted(result_path.glob("**/run_summary.csv"))
@@ -1075,7 +1075,7 @@ with tab_data:
                 [pd.read_csv(f).assign(folder=f.parent.name) for f in run_summaries],
                 ignore_index=True,
             )
-            st.dataframe(all_runs, use_container_width=True, hide_index=True)
+            st.dataframe(all_runs, width="stretch", hide_index=True)
 
     layer_files_dt = sorted(result_path.glob("**/layer_energy_deposition.csv"))
     if layer_files_dt:
@@ -1084,7 +1084,7 @@ with tab_data:
                 [pd.read_csv(f).assign(folder=f.parent.name) for f in layer_files_dt],
                 ignore_index=True,
             )
-            st.dataframe(all_l, use_container_width=True, hide_index=True)
+            st.dataframe(all_l, width="stretch", hide_index=True)
 
     if not found_sweep and not run_summaries:
         st.info(str(copy["no_csv"]))
@@ -1119,10 +1119,10 @@ with tab_desc:
                         "computed from the elemental mass fractions."
                     )
                     desc_df = descriptors_from_study(study_obj)
-                    st.dataframe(desc_df.round(4), use_container_width=True, hide_index=True)
+                    st.dataframe(desc_df.round(4), width="stretch", hide_index=True)
                     st.markdown("**Elemental Expansion**")
                     elem_df = elemental_expansion_table(study_obj)
-                    st.dataframe(elem_df.round(6), use_container_width=True, hide_index=True)
+                    st.dataframe(elem_df.round(6), width="stretch", hide_index=True)
             except Exception as exc:
                 st.error(str(copy["descriptors_error"]).format(error=exc))
 

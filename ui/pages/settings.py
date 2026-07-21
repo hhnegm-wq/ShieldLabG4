@@ -68,7 +68,7 @@ with st.form("platform_preset_form"):
         index=list(preset_labels.keys()).index(current_preset if current_preset in preset_labels else "custom"),
         format_func=lambda preset_key: preset_labels[preset_key],
     )
-    preset_apply_clicked = st.form_submit_button(str(copy.get("preset_apply_label", "Apply Preset")), use_container_width=True)
+    preset_apply_clicked = st.form_submit_button(str(copy.get("preset_apply_label", "Apply Preset")), width="stretch")
 
 if preset_apply_clicked:
     if selected_preset == "custom":
@@ -125,8 +125,8 @@ with st.form("platform_settings_form"):
         )
 
     c_apply, c_reset = st.columns(2)
-    apply_clicked = c_apply.form_submit_button(str(copy.get("apply_label", "Apply Settings")), type="primary", use_container_width=True)
-    reset_clicked = c_reset.form_submit_button(str(copy.get("reset_label", "Reset Defaults")), use_container_width=True)
+    apply_clicked = c_apply.form_submit_button(str(copy.get("apply_label", "Apply Settings")), type="primary", width="stretch")
+    reset_clicked = c_reset.form_submit_button(str(copy.get("reset_label", "Reset Defaults")), width="stretch")
 
 if apply_clicked:
     update_platform_settings(

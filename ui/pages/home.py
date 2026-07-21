@@ -187,7 +187,7 @@ if val_files:
         except Exception:
             _log.debug("Could not parse run summary entry for table — row will be skipped", exc_info=True)
     if rows:
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 else:
     st.info("No completed runs yet. Go to **Run Study** to execute your first simulation.")
 
