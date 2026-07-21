@@ -299,8 +299,8 @@ This appendix is the engineering plan that converts the manuscript into reproduc
 ### WP1 — Literature lock and density provenance ([sprint S1])
 
 - **Files:**
-  - `docs/validation/paper3_nanogeant4/references_verified.bib` (new) — BibTeX with DOI for every cite.
-  - `docs/validation/paper3_nanogeant4/materials_density_provenance.csv` (new) — one row per (material, $w_f$) with `rho_value`, `rho_source` ∈ {measured, volume_rule, mass_rule}, `doi_or_lab_report`.
+  - `papers/paper3_nanogeant4/references_verified.bib` (new) — BibTeX with DOI for every cite.
+  - `papers/paper3_nanogeant4/materials_density_provenance.csv` (new) — one row per (material, $w_f$) with `rho_value`, `rho_source` ∈ {measured, volume_rule, mass_rule}, `doi_or_lab_report`.
 - **Acceptance:** every row has a DOI or internal lab-report identifier; no `[verify]` tags remain.
 - **Tools:** Crossref API for DOI verification (script `tools/verify_bib_dois.py` — proposed new).
 
@@ -358,7 +358,7 @@ This appendix is the engineering plan that converts the manuscript into reproduc
 ### WP7 — Figure generation ([sprint S5])
 
 - **New module:** `python/shieldlab/viz/paper3_figures.py` — one function per figure (F1–F8). All use `apply_journal_style("publication_strict")` per the [shieldlab.viz](python/shieldlab/viz/__init__.py) policy.
-- **Outputs:** vector PDF + 600-DPI PNG into `docs/validation/paper3_nanogeant4/figures/`.
+- **Outputs:** vector PDF + 600-DPI PNG into `papers/paper3_nanogeant4/figures/`.
 - **Acceptance:** `pytest -m publication` includes `tests/benchmarks/test_paper3_figures.py` asserting all figures regenerate deterministically from committed CSVs (perceptual-hash diff ≤ 1%).
 
 ### WP8 — Manuscript v03 ([sprint S6])
@@ -385,8 +385,8 @@ This appendix is the engineering plan that converts the manuscript into reproduc
 - [ ] `pytest -q --ignore=backups` baseline remains 188+ passing (no regressions from new code).
 - [ ] New tests added by WP2–WP7 all pass.
 - [ ] `pytest -m publication` passes including paper3 figure regression tests.
-- [ ] `docs/validation/paper3_nanogeant4/manuscript_nanogeant4_v03.md` is complete with no `[expected]`, `[verify]`, `[placeholder]` tags.
-- [ ] `docs/validation/paper3_nanogeant4/references_verified.bib` contains a verified DOI for every cite.
+- [ ] `papers/paper3_nanogeant4/manuscript_nanogeant4_v03.md` is complete with no `[expected]`, `[verify]`, `[placeholder]` tags.
+- [ ] `papers/paper3_nanogeant4/references_verified.bib` contains a verified DOI for every cite.
 - [ ] Zenodo deposit prepared with code + raw results + figures; DOI minted.
 - [ ] `docs/validation/SUBMISSION_CHECKLIST.md` extended with a paper-3 section and all items ticked.
 - [ ] Co-author review (when applicable) and ethics statement signed off.

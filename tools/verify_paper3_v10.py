@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MANUSCRIPT = REPO_ROOT / "docs" / "validation" / "paper3_nanogeant4" / "manuscript_nanogeant4_v10.md"
+MANUSCRIPT = REPO_ROOT / "papers" / "paper3_nanogeant4" / "manuscript_nanogeant4_v10.md"
 FIGURE_SCRIPT = REPO_ROOT / "scripts" / "generate_paper3_v10_figures.py"
 FIGURE_DIR = REPO_ROOT / "results" / "paper3" / "figures" / "v10"
 

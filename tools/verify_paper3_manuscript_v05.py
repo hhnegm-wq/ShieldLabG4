@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MANUSCRIPT = REPO_ROOT / "docs" / "validation" / "paper3_nanogeant4" / "manuscript_nanogeant4_v05.md"
+MANUSCRIPT = REPO_ROOT / "papers" / "paper3_nanogeant4" / "manuscript_nanogeant4_v05.md"
 EXPECTED_FILENAME = "manuscript_nanogeant4_v05.md"
 
 REQUIRED_PHRASES = {

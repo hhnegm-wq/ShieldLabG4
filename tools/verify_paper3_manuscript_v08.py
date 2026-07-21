@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MANUSCRIPT = ROOT / "docs/validation/paper3_nanogeant4/manuscript_nanogeant4_v08.md"
+MANUSCRIPT = ROOT / "papers/paper3_nanogeant4/manuscript_nanogeant4_v08.md"
 
 ERRORS = []
 

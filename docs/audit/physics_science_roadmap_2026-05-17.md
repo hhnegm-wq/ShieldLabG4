@@ -15,7 +15,7 @@
 
 ### ✅ ITEM 1 · Paper 2: Fix stale Python import examples in §6.2
 **Why first:** A code example in a software paper that imports a non-existent module (`shieldlab.shielding`, `shieldlab.materials`) is a hard factual error that will be caught by any referee who tries to reproduce the work.  
-**Files:** `docs/validation/paper2_technical_software/manuscript_technical_software_v02.md`  
+**Files:** `papers/paper2_technical_software/manuscript_technical_software_v02.md`  
 **Action:** Replace the §6.2 code snippet with correct imports that reflect the actual installed package structure (`from shieldlab.physics.shielding_params import ...` etc.).  
 **Verify:** `grep -n "from shieldlab" paper2` returns only real module paths. Confirm actual imports work with `$env:PYTHONPATH="python"; python -c "from shieldlab.physics.shielding_params import ShieldingTable"`.  
 **Status:** TODO
@@ -24,7 +24,7 @@
 
 ### ✅ ITEM 2 · Paper 2: Update test count 155 → 170
 **Why:** Paper states "155 passing tests" in both §8.2 and the abstract. Current gate: 170. Referees check.  
-**Files:** `docs/validation/paper2_technical_software/manuscript_technical_software_v02.md`  
+**Files:** `papers/paper2_technical_software/manuscript_technical_software_v02.md`  
 **Action:** Replace all occurrences of "155 passing" / "155 tests" with "170 passing" / "170 tests."  
 **Verify:** `grep -n "155" manuscript` returns 0.  
 **Status:** TODO
@@ -33,7 +33,7 @@
 
 ### ✅ ITEM 3 · Paper 2: Fix Reference [6] — FastAPI informal web doc
 **Why:** Numbered references in a scientific manuscript should be peer-reviewed or formally published. An informal web-doc URL occupying reference slot [6] is a citation-quality error.  
-**Files:** `docs/validation/paper2_technical_software/manuscript_technical_software_v02.md`  
+**Files:** `papers/paper2_technical_software/manuscript_technical_software_v02.md`  
 **Action:** Replace `[6] FastAPI Documentation. Tiangolo / Sebastián Ramírez. https://fastapi.tiangolo.com` with the FastAPI Zenodo archive citation (DOI 10.5281/zenodo.7986053 or most current) or convert to a footnote/URL-only inline reference and renumber subsequent citations.  
 **Verify:** All `[6]` in-text references are updated; bibliography is internally consistent.  
 **Status:** TODO
@@ -51,7 +51,7 @@
 
 ### ✅ ITEM 5 · Paper 1: Add GP buildup caveat / clarify §4.9
 **Why:** Paper 1 §4.9 presents buildup factor curves as validated without disclosing that the validation is self-consistency only (no ANSI/ANS-6.4.3 comparison). This will be caught by a domain reviewer.  
-**Files:** `docs/validation/paper1_scientific/manuscript_scientific_v08.md`  
+**Files:** `papers/paper1_scientific/manuscript_scientific_v08.md`  
 **Action:** Add a clearly marked caveat sentence in §4.9: *"Note that the GP coefficient set used here has been validated only for self-consistency with the original tabulation; an independent comparison against the ANSI/ANS-6.4.3-1991 standard could not be performed at this stage as the standard table data are copyrighted. Users requiring certified buildup factors for shielding design in regulated environments should consult the standard directly."*  
 **Verify:** grep for ANSI in paper1 returns the new sentence.  
 **Status:** TODO
@@ -60,7 +60,7 @@
 
 ### ✅ ITEM 6 · Paper 1: Fix Table 10 framing — "capability matrix" not "benchmark"
 **Why:** The abstract implies validation against MCNP6/FLUKA/PHITS (Table 10). Table 10 is actually a feature-comparison matrix with no numerical benchmark values. This is misleading.  
-**Files:** `docs/validation/paper1_scientific/manuscript_scientific_v08.md`  
+**Files:** `papers/paper1_scientific/manuscript_scientific_v08.md`  
 **Action:** Update the Table 10 caption and any abstract/conclusion sentence that implies numerical agreement with these codes. Change language from "validated against / compared to" to "positioned relative to" or "feature-level comparison with."  
 **Verify:** `grep -n "MCNP6\|FLUKA\|PHITS" paper1` — every occurrence either has "capability comparison" context or is in Table 10 with corrected caption.  
 **Status:** ✅ DONE — `_CACHE_VERSION = "v2"` added; `_fetch_element_mac()` closes NpzFile before unlink (Windows-safe); 3 new tests in `TestNistXcomCacheVersion` (version constant, stale-invalidation, fresh-reuse); existing 22 cache files migrated to v2; 31 tests in `test_physics.py` all pass.
@@ -160,7 +160,7 @@
 
 ### ✅ ITEM 14 · Paper 1: Clarify §4.6/4.7 stopping-power "validation" is trivial at tabulation points
 **Why:** Benchmarking an interpolation scheme at exactly the same energy points present in the reference table guarantees near-zero error and is not a meaningful test of accuracy. The paper should acknowledge this and add a mid-point check.  
-**Files:** `docs/validation/paper1_scientific/manuscript_scientific_v08.md`  
+**Files:** `papers/paper1_scientific/manuscript_scientific_v08.md`  
 **Action:**  
 1. Add a footnote in §4.6: *"Energies listed in Tables 6–7 are taken directly from ESTAR/PSTAR tabulation nodes; at these points the interpolation error is trivially small. A supplementary check at mid-points between tabulation entries (see Supplementary Table S1) shows deviations of 0.5–1.5% for collision stopping power and up to 3% for total stopping power at low energy."*  
 2. Add Supplementary Table S1 with 5 example mid-point deviations computed from `nist_estar.py`.  
@@ -171,7 +171,7 @@
 
 ### ✅ ITEM 15 · Paper 1 & 2: Add `[Institution]` resolution process note
 **Why:** Both manuscripts have `[Institution]` in the author block. This must be resolved before submission. The agent cannot fill it in (requires real affiliation from the user), but a clear action item should be in the repository.  
-**Files:** `docs/validation/paper1_scientific/manuscript_scientific_v08.md`, `docs/validation/paper2_technical_software/manuscript_technical_software_v02.md`  
+**Files:** `papers/paper1_scientific/manuscript_scientific_v08.md`, `papers/paper2_technical_software/manuscript_technical_software_v02.md`  
 **Action:**  
 1. In each manuscript, change `[Institution]` to `[AFFILIATION REQUIRED — DO NOT SUBMIT WITH PLACEHOLDER]` in bold so it is impossible to accidentally overlook.  
 2. Create `docs/validation/SUBMISSION_CHECKLIST.md` listing all remaining submission-blockers:

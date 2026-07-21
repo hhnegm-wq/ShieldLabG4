@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Working title | *ShieldLab G4: A Geant4-based open-source framework for gamma-ray shielding validation* |
-| Working file | `docs/validation/paper1_scientific/manuscript_scientific_v08.md` |
+| Working file | `papers/paper1_scientific/manuscript_scientific_v08.md` |
 | Status | Draft (not yet submitted) |
 | Target journal | *Computer Physics Communications* (Elsevier) |
 | ISSN | 0010-4655 |
@@ -30,7 +30,7 @@
 | Field | Value |
 |---|---|
 | Working title | *ShieldLab G4: An Open-Source Software Platform for Gamma-Ray Shielding Simulation and Validation* |
-| Working file | `docs/validation/paper2_technical_software/manuscript_technical_software_v02.md` |
+| Working file | `papers/paper2_technical_software/manuscript_technical_software_v02.md` |
 | Status | Draft v0.2 — figures generated, DOCX pending final regen |
 | Target journal | *SoftwareX* (Elsevier) |
 | ISSN | 2352-7110 |
@@ -51,9 +51,9 @@
 - [ ] README with install + quickstart — present (`README.md`)
 - [ ] License file — confirm
 - [ ] Tests described — §8 Governance & QA
-- [ ] Highlights (5 bullets, ≤85 chars each) — `docs/validation/paper2_technical_software/final/highlights.md`
-- [ ] Cover letter — `docs/validation/paper2_technical_software/final/cover_letter.md`
-- [ ] DOCX for submission — `docs/validation/paper2_technical_software/final/manuscript_technical_software_v02.docx`
+- [ ] Highlights (5 bullets, ≤85 chars each) — `papers/paper2_technical_software/final/highlights.md`
+- [ ] Cover letter — `papers/paper2_technical_software/final/cover_letter.md`
+- [ ] DOCX for submission — `papers/paper2_technical_software/final/manuscript_technical_software_v02.docx`
 - [ ] All figures at 300 DPI — ✅ generated
 - [ ] Author ORCID numbers — *(fill before submission)*
 - [ ] [Institution] placeholder — *(fill before submission)*
@@ -85,7 +85,7 @@
 | Field | Value |
 |---|---|
 | Working title | *Memory-Efficient Geant4 Modelling Regimes for Nanocomposite Radiation Shielding: Effective Medium, Explicit Nanoparticle Geometry, and Hybrid Representative-Volume Validation* |
-| Working file | `docs/validation/paper3_nanogeant4/manuscript_nanogeant4_v07.md` |
+| Working file | `papers/paper3_nanogeant4/manuscript_nanogeant4_v07.md` |
 | Status | Draft v07 — affiliation completed; cover letter, highlights, graphical abstract, and clean DOCX prepared |
 | Primary target journal | *Radiation Physics and Chemistry* (Elsevier) |
 | Secondary targets | *Nuclear Instruments and Methods in Physics Research A*; *Computer Physics Communications* |
@@ -102,6 +102,6 @@
 | 2026-05-18 | v05 source revision | Canonical source aligned, abstract shortened, stale appendix removed, metadata normalized, figure guide applied |
 | 2026-05-18 | v06 promotion | Round 1/2 self-review closed, five-figure suite added, numbered figure references embedded |
 | 2026-05-18 | v06 DOCX export | Clean pandoc export completed from manuscript directory with figure paths resolved |
-| 2026-05-18 | v07 packaging | Affiliation completed and submission-package files added under `docs/validation/paper3_nanogeant4/final/` |
+| 2026-05-18 | v07 packaging | Affiliation completed and submission-package files added under `papers/paper3_nanogeant4/final/` |
 | 2026-05-18 | v07 package assets | Cover letter, 5 highlights, graphical abstract PNG/PDF, and clean v07 DOCX created |
-| 2026-05-18 | Self-review artifacts saved | Roast, roadmap, and fix tracking stored under `docs/validation/paper3_nanogeant4/archive/self_review/` |
+| 2026-05-18 | Self-review artifacts saved | Roast, roadmap, and fix tracking stored under `papers/paper3_nanogeant4/archive/self_review/` |

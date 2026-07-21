@@ -10,8 +10,8 @@ API, cloud/worker path, validation artefacts, tests, security, observability, an
 > **Document role:** This is the technical/software companion paper and platform assessment,
 > not the scientific validation manuscript.
 > The current scientific paper is
-> `docs/validation/benchmark_paper_shieldlabg4_v07.md`, with its Word export at
-> `docs/validation/benchmark_paper_shieldlabg4_v07.docx`. This report supports
+> `papers/benchmark_paper_shieldlabg4_v07.md`, with its Word export at
+> `papers/benchmark_paper_shieldlabg4_v07.docx`. This report supports
 > that paper by documenting production readiness, governance, security, and
 > operational evidence; it should not duplicate the manuscript's scientific
 > novelty, benchmark narrative, figures, or literature discussion.

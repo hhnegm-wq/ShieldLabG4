@@ -1,8 +1,8 @@
 # Paper 3 v09 Roast, Executive Weaknesses, and Upgrade Roadmap
 
-**Source audited:** `docs/validation/paper3_nanogeant4/manuscript_nanogeant4_v09.md`  
+**Source audited:** `papers/paper3_nanogeant4/manuscript_nanogeant4_v09.md`  
 **Audit date:** 2026-05-20  
-**Backup completed before revision:** `docs/validation/paper3_nanogeant4/archive/v09_pre_revision_backup_20260520_003830/`
+**Backup completed before revision:** `papers/paper3_nanogeant4/archive/v09_pre_revision_backup_20260520_003830/`
 
 ---
 

@@ -1,0 +1,22 @@
+{
+  "figure_1": {
+    "png": "results\\paper3\\figures\\v09\\paper3_v09_fig1_six_material_xcom_validation.png",
+    "pdf": "results\\paper3\\figures\\v09\\paper3_v09_fig1_six_material_xcom_validation.pdf",
+    "svg": "results\\paper3\\figures\\v09\\paper3_v09_fig1_six_material_xcom_validation.svg"
+  },
+  "figure_2": {
+    "png": "results\\paper3\\figures\\v09\\paper3_v09_fig2_kedge_landscape_delta_heatmap.png",
+    "pdf": "results\\paper3\\figures\\v09\\paper3_v09_fig2_kedge_landscape_delta_heatmap.pdf",
+    "svg": "results\\paper3\\figures\\v09\\paper3_v09_fig2_kedge_landscape_delta_heatmap.svg"
+  },
+  "figure_3": {
+    "png": "results\\paper3\\figures\\v09\\paper3_v09_fig3_cross_regime_ratio_heatmaps.png",
+    "pdf": "results\\paper3\\figures\\v09\\paper3_v09_fig3_cross_regime_ratio_heatmaps.pdf",
+    "svg": "results\\paper3\\figures\\v09\\paper3_v09_fig3_cross_regime_ratio_heatmaps.svg"
+  },
+  "figure_4": {
+    "png": "results\\paper3\\figures\\v09\\paper3_v09_fig4_explicit_rve_agreement.png",
+    "pdf": "results\\paper3\\figures\\v09\\paper3_v09_fig4_explicit_rve_agreement.pdf",
+    "svg": "results\\paper3\\figures\\v09\\paper3_v09_fig4_explicit_rve_agreement.svg"
+  }
+}

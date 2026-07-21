@@ -3,10 +3,10 @@ fig03_attenuation_agreement.py
 Canonical generator for Figure 3 — ShieldLab G4 vs NIST XCOM attenuation scatter.
 Output: ../../figures/fig03_attenuation_agreement.png  (300 DPI, white bg, 4-spine)
 
-Data source: docs/validation/paper2_technical_software/data_validation_report.csv
+Data source: papers/paper2_technical_software/data_validation_report.csv
 
 Run from repo root:
-    python docs/validation/paper2_technical_software/scripts/figures/fig03_attenuation_agreement.py
+    python papers/paper2_technical_software/scripts/figures/fig03_attenuation_agreement.py
 """
 from __future__ import annotations
 

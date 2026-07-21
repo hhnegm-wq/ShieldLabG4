@@ -4,7 +4,7 @@ verify_manuscript.py
 Checks that the Paper 2 technical/software manuscript is ready for submission.
 
 Run from repo root:
-    python docs/validation/paper2_technical_software/verify_manuscript.py
+    python papers/paper2_technical_software/verify_manuscript.py
 
 Exit code: 0 = all checks pass, 1 = failures found.
 """
