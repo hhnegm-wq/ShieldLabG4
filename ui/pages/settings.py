@@ -190,7 +190,20 @@ if _val_report_path.exists():
         )
 
 import streamlit as _st_session  # noqa: F401 — used only for session_id probe
-_session_id = st.runtime.scriptrunner.script_run_context.get_script_run_ctx()
+
+# Streamlit's internal scriptrunner API path has moved across versions, so
+# import defensively and degrade to "—" if it is unavailable.
+try:
+    from streamlit.runtime.scriptrunner import get_script_run_ctx as _get_script_run_ctx
+except Exception:  # pragma: no cover - internal API location varies by version
+    try:
+        from streamlit.runtime.scriptrunner_utils.script_run_context import (
+            get_script_run_ctx as _get_script_run_ctx,
+        )
+    except Exception:
+        _get_script_run_ctx = None
+
+_session_id = _get_script_run_ctx() if _get_script_run_ctx is not None else None
 _session_id_str = (
     str(_session_id.session_id)[:8] + "…"
     if _session_id is not None
