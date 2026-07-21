@@ -14,6 +14,9 @@ cd "$ROOT_DIR"
 
 export SHIELDLAB_UI_SMOKE=1
 export SHIELDLAB_BASE_URL
+# Ensure the shieldlab package (python/) and UI modules (ui/) are importable
+# regardless of the launch directory or installed-package state.
+export PYTHONPATH="${ROOT_DIR}/python:${ROOT_DIR}/ui${PYTHONPATH:+:${PYTHONPATH}}"
 
 SERVER_LOG="${ROOT_DIR}/.ci_streamlit.log"
 rm -f "$SERVER_LOG"
@@ -31,7 +34,7 @@ trap cleanup EXIT
 
 # Wait for Streamlit to become reachable.
 ready=0
-for _ in $(seq 1 60); do
+for _ in $(seq 1 90); do
   if curl -fsS "$SHIELDLAB_BASE_URL" >/dev/null 2>&1; then
     ready=1
     break
@@ -53,6 +56,8 @@ printf '%s\n' "$out"
 
 if [ "$code" -ne 0 ]; then
   echo "Release gate failed: UI smoke pytest failed with exit code $code" >&2
+  echo "---- Streamlit log ----" >&2
+  cat "$SERVER_LOG" >&2 || true
   exit "$code"
 fi
 
