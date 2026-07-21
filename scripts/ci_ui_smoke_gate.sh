@@ -60,9 +60,13 @@ if [ "$ready" -ne 1 ]; then
   exit 1
 fi
 
-# Capture pytest output while preserving real exit behavior.
+# Capture pytest output; disable errexit around the command substitution so a
+# non-zero pytest status does not abort the script before we print the captured
+# output (that bug previously hid the real failure).
+set +e
 out="$(python -m pytest tests/test_ui_playwright_smoke.py -q -rA 2>&1)"
 code=$?
+set -e
 printf '%s\n' "$out"
 
 if [ "$code" -ne 0 ]; then
