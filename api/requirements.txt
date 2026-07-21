@@ -5,7 +5,7 @@ numpy
 pandas
 scipy
 azure-identity>=1.17
-azure-storage-queue>=12.10
+azure-storage-queue>=12.17.0
 azure-storage-blob>=12.20
 # OpenTelemetry – tracing (Phase 2.4)
 opentelemetry-sdk>=1.24
