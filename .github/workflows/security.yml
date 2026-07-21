@@ -69,7 +69,7 @@ jobs:
           retention-days: 90
 
       - name: Generate CycloneDX SBOM (environment)
-        run: cyclonedx-py environment --output-format json --outfile sbom.json
+        run: cyclonedx-py environment --output-format json --output-file sbom.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -85,7 +85,9 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Build worker image
-        run: docker build -t shieldlab-worker:ci ./worker
+        # The worker Dockerfile COPYs python/ and worker/ from the repo root, so it
+        # must be built with the repo root as context, not ./worker.
+        run: docker build -t shieldlab-worker:ci -f worker/Dockerfile .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0

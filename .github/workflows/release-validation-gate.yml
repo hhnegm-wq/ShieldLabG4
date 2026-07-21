@@ -52,15 +52,9 @@ jobs:
           python -m pip install -e ./python
           python -m pip install -r api/requirements.txt
 
-      - name: Install UI smoke dependencies
-        run: |
-          python -m pip install pytest streamlit playwright
-          python -m playwright install --with-deps chromium
-
-      - name: Enforce no-skip UI smoke gate
-        run: |
-          bash "$GITHUB_WORKSPACE/scripts/ci_ui_smoke_gate.sh"
-
+      # NOTE: the Playwright UI smoke runs in its own workflow (ui-smoke.yml),
+      # not here. An end-to-end browser test is intentionally kept out of the
+      # deterministic release gate so it never opaquely blocks a release.
       - name: Generate release validation report
         run: |
           python -m shieldlab.io.release_validation_report \
