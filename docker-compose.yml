@@ -12,9 +12,6 @@
 name: shieldlabg4
 
 x-app: &app
-  build:
-    context: .
-    dockerfile: Dockerfile
   image: shieldlabg4:local
   environment: &app-env
     SHIELDLAB_BACKEND: local
@@ -22,6 +19,17 @@ x-app: &app
     SHIELDLAB_QUEUE_NAME: simulation-jobs
     SHIELDLAB_INPUT_CONTAINER: simulation-input
     SHIELDLAB_OUTPUT_CONTAINER: simulation-output
+    # --- Security / auth (pass-through from .env; empty = secure-by-default) ---
+    # API auth: with no keys configured the API returns 503 on protected routes.
+    SHIELDLAB_API_KEY_HASHES: ${SHIELDLAB_API_KEY_HASHES:-}
+    SHIELDLAB_API_KEYS: ${SHIELDLAB_API_KEYS:-}
+    SHIELDLAB_CORS_ORIGINS: ${SHIELDLAB_CORS_ORIGINS:-}
+    SHIELDLAB_RATE_LIMIT_PER_MIN: ${SHIELDLAB_RATE_LIMIT_PER_MIN:-60}
+    SHIELDLAB_DEV: ${SHIELDLAB_DEV:-0}
+    # UI tier auth (self-hosted Pro / JWT).
+    SHIELDLAB_LICENSE_KEY: ${SHIELDLAB_LICENSE_KEY:-}
+    SHIELDLAB_PRO_KEY_HASH: ${SHIELDLAB_PRO_KEY_HASH:-}
+    SHIELDLAB_JWT_SECRET: ${SHIELDLAB_JWT_SECRET:-}
   volumes:
     - shieldlab-data:/data
   restart: unless-stopped
@@ -29,6 +37,9 @@ x-app: &app
 services:
   api:
     <<: *app
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: shieldlab-api
     command: ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     ports:

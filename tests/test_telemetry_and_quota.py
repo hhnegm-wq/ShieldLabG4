@@ -72,6 +72,71 @@ class TestTelemetryModule:
         cid = headers.get(_CORRELATION_HEADER) or str(uuid.uuid4())
         assert len(cid) == 36
 
+    def test_dispatch_generates_correlation_header(self, monkeypatch):
+        """Regression: TracingMiddleware.dispatch must run end-to-end.
+
+        Previously the middleware called a bare ``uuid4()`` (never imported),
+        raising ``NameError`` on *every* request. This test drives the real
+        ``dispatch`` coroutine so that regression cannot recur.
+        """
+        import asyncio
+        from starlette.requests import Request
+        from starlette.responses import Response
+
+        import api.telemetry as tel
+
+        # Force the non-OTel branch for a deterministic, dependency-free path.
+        monkeypatch.setattr(tel, "_OTEL_AVAILABLE", False, raising=False)
+        monkeypatch.setattr(tel, "_tracer", None, raising=False)
+
+        middleware = tel.TracingMiddleware(app=lambda scope, receive, send: None)
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/",
+            "headers": [],
+            "query_string": b"",
+        }
+        request = Request(scope)
+
+        async def call_next(_req):
+            return Response("ok", status_code=200)
+
+        response = asyncio.run(middleware.dispatch(request, call_next))
+
+        assert response.status_code == 200
+        assert tel._CORRELATION_HEADER in response.headers
+        assert len(response.headers[tel._CORRELATION_HEADER]) == 36
+        assert request.state.correlation_id == response.headers[tel._CORRELATION_HEADER]
+
+    def test_dispatch_echoes_incoming_correlation_header(self, monkeypatch):
+        """An inbound X-Correlation-Id is preserved on the response."""
+        import asyncio
+        from starlette.requests import Request
+        from starlette.responses import Response
+
+        import api.telemetry as tel
+
+        monkeypatch.setattr(tel, "_OTEL_AVAILABLE", False, raising=False)
+        monkeypatch.setattr(tel, "_tracer", None, raising=False)
+
+        middleware = tel.TracingMiddleware(app=lambda scope, receive, send: None)
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/",
+            "headers": [(b"x-correlation-id", b"trace-abc-123")],
+            "query_string": b"",
+        }
+        request = Request(scope)
+
+        async def call_next(_req):
+            return Response("ok", status_code=200)
+
+        response = asyncio.run(middleware.dispatch(request, call_next))
+        assert response.headers[tel._CORRELATION_HEADER] == "trace-abc-123"
+
+
 
 # ---------------------------------------------------------------------------
 # Phase 2.5 – quota middleware

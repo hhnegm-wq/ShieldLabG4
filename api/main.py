@@ -15,10 +15,12 @@ GET  /api/v1/version            Package version
 
 Authentication
 --------------
-Pro-tier endpoints require  X-API-Key: <key>  header.
-In this open-core version the key check is a stub (always passes when key is
-present).  Replace `_verify_api_key` with real Stripe/Auth0 logic before
-deploying.
+Every physics/data/jobs endpoint requires an  X-API-Key: <key>  header.
+Keys are verified by `api.security.verify_api_key` against SHA-256 digests
+configured via ``SHIELDLAB_API_KEY_HASHES`` (production) or ``SHIELDLAB_API_KEYS``
+(self-hosted), using a constant-time comparison. When no keys are configured the
+server returns 503 in production, or accepts any non-empty key only when
+``SHIELDLAB_DEV=1``. Each verified request is additionally rate-limited per key.
 
 Usage example (curl):
     curl -X POST http://localhost:8000/api/v1/shielding \\

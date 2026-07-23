@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-#
 # Shared runtime image for the ShieldLab G4 local/free stack (UI + API + worker).
 # One image, three roles — the role is chosen by the command in docker-compose.
 # Runs on the LocalBackend (filesystem + SQLite): no cloud account required.
@@ -11,18 +9,27 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=120 \
+    PIP_RETRIES=10 \
     PYTHONPATH=/app \
     SHIELDLAB_BACKEND=local \
     SHIELDLAB_LOCAL_DATA_DIR=/data
 
 WORKDIR /app
 
-# Copy source and install the full UI + API + worker Python stack. The shieldlab
-# package (matplotlib/openpyxl/pandas/pypdf), FastAPI, uvicorn, Streamlit and
-# PyJWT all resolve from requirements.appservice.txt (which runs `-e ./python`).
-COPY . .
+# Install dependencies first, using only the manifests + the editable package
+# source, so ordinary code edits do NOT invalidate the (slow) pip layer. The
+# shieldlab package (matplotlib/openpyxl/pandas/pypdf), FastAPI, uvicorn,
+# Streamlit and PyJWT all resolve from requirements.appservice.txt.
+COPY requirements.appservice.txt ./
+COPY api/requirements.txt ./api/requirements.txt
+COPY python/ ./python/
 RUN python -m pip install --upgrade pip "setuptools>=83.0.0" wheel \
-    && python -m pip install -r requirements.appservice.txt
+    && python -m pip install --prefer-binary -r requirements.appservice.txt
+
+# Copy the remaining application source (API, worker, UI). Editing these files
+# only invalidates this layer, keeping rebuilds fast.
+COPY . .
 
 # Non-root runtime user; /data is the shared local-backend volume mount point.
 RUN useradd --system --create-home --uid 10001 appuser \
