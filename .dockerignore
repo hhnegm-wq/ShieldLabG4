@@ -1,0 +1,49 @@
+# Keep the Docker build context small and reproducible.
+
+# Version control / CI
+.git
+.github
+.gitignore
+.gitattributes
+.editorconfig
+.pre-commit-config.yaml
+
+# Local data, scratch, and generated artifacts
+.shieldlab_data/
+.shieldlab_demo/
+backups/
+results/
+build/
+tmp/
+.benchmarks/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.streamlit/
+streamlit_debug.log
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Heavy, non-runtime content
+docs/
+papers/
+tests/
+generated_*.mac
+
+# Environments and secrets (never bake into the image)
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+node_modules/
