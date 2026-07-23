@@ -370,37 +370,9 @@ class JobSubmitRequest(BaseModel):
         return v.strip("/")
 
 
-def _create_azure_storage_clients():
-    conn_str = os.environ.get("AZURE_STORAGE_CONNECTION_STRING", "").strip()
-    queue_name = os.environ.get("AZURE_QUEUE_NAME", "simulation-jobs").strip() or "simulation-jobs"
-
-    if conn_str:
-        from azure.storage.blob import BlobServiceClient
-        from azure.storage.queue import QueueClient
-
-        queue_client = QueueClient.from_connection_string(conn_str=conn_str, queue_name=queue_name)
-        blob_service = BlobServiceClient.from_connection_string(conn_str)
-        return queue_client, blob_service, queue_name
-
-    storage_account_url = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "").strip()
-    if not storage_account_url:
-        raise RuntimeError(
-            "Missing Azure storage configuration. Set AZURE_STORAGE_CONNECTION_STRING "
-            "or AZURE_STORAGE_ACCOUNT_URL with managed identity."
-        )
-
-    from azure.identity import DefaultAzureCredential
-    from azure.storage.blob import BlobServiceClient
-    from azure.storage.queue import QueueClient
-
-    credential = DefaultAzureCredential()
-    queue_account_url = storage_account_url.replace(".blob.", ".queue.")
-    if not queue_account_url.endswith("/"):
-        queue_account_url += "/"
-
-    queue_client = QueueClient(account_url=queue_account_url, queue_name=queue_name, credential=credential)
-    blob_service = BlobServiceClient(account_url=storage_account_url, credential=credential)
-    return queue_client, blob_service, queue_name
+# Job queue + blob storage are provided by the pluggable backend abstraction in
+# ``shieldlab.backends`` (LocalBackend for free/demo mode; AzureBackend for
+# production), selected via SHIELDLAB_BACKEND or auto-detected. See submit_job.
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -592,54 +564,87 @@ def submit_job(
     req: JobSubmitRequest,
     x_api_key: Annotated[str | None, Header()] = None,
 ) -> dict[str, Any]:
-    """Submit a cloud simulation job by writing study payload to Blob and queueing a worker message."""
+    """Submit a simulation job: store the study payload and enqueue a worker message.
+
+    Uses the pluggable ``shieldlab.backends`` abstraction — LocalBackend
+    (filesystem + SQLite, free/demo) or AzureBackend (Queue + Blob), selected by
+    ``SHIELDLAB_BACKEND`` or auto-detected from the environment.
+    """
     _verify_api_key(x_api_key)
 
     try:
-        queue_client, blob_service, queue_name = _create_azure_storage_clients()
+        from shieldlab.backends import get_backend, load_config as _load_backend_config
 
-        input_container = os.environ.get("AZURE_INPUT_CONTAINER_NAME", "simulation-input").strip() or "simulation-input"
-        output_container = os.environ.get("AZURE_OUTPUT_CONTAINER_NAME", "simulation-output").strip() or "simulation-output"
+        backend_cfg = _load_backend_config()
+        backend = get_backend(backend_cfg)
+        backend.ensure_ready()
 
+        input_container = backend_cfg.input_container
         job_id = f"job-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}-{uuid4().hex[:8]}"
         blob_name = f"studies/{job_id}.json"
         output_prefix = req.output_prefix or f"jobs/{job_id}/"
+        study_blob_path = f"{input_container}/{blob_name}"
 
-        input_container_client = blob_service.get_container_client(input_container)
-        output_container_client = blob_service.get_container_client(output_container)
-
-        try:
-            input_container_client.create_container()
-        except Exception as _e:
-            _LOG.debug("create_container(%s): %s (likely already exists)", input_container, _e)
-
-        try:
-            output_container_client.create_container()
-        except Exception as _e:
-            _LOG.debug("create_container(%s): %s (likely already exists)", output_container, _e)
-
-        payload_bytes = json.dumps(req.study, ensure_ascii=True).encode("utf-8")
-        input_container_client.upload_blob(name=blob_name, data=payload_bytes, overwrite=True)
-
-        try:
-            queue_client.create_queue()
-        except Exception as _e:
-            _LOG.debug("create_queue(%s): %s (likely already exists)", queue_name, _e)
-
-        queue_payload = {
-            "job_id": job_id,
-            "study_blob_path": f"{input_container}/{blob_name}",
-            "output_prefix": output_prefix,
-            "run_args": req.run_args,
-        }
-        queue_client.send_message(json.dumps(queue_payload, ensure_ascii=True))
+        backend.put_blob(
+            input_container, blob_name, json.dumps(req.study, ensure_ascii=True).encode("utf-8")
+        )
+        backend.enqueue(
+            json.dumps(
+                {
+                    "job_id": job_id,
+                    "study_blob_path": study_blob_path,
+                    "output_prefix": output_prefix,
+                    "run_args": req.run_args,
+                },
+                ensure_ascii=True,
+            )
+        )
 
         return {
             "status": "queued",
             "job_id": job_id,
-            "queue_name": queue_name,
-            "study_blob_path": f"{input_container}/{blob_name}",
+            "backend": type(backend).__name__,
+            "queue_name": backend_cfg.queue_name,
+            "study_blob_path": study_blob_path,
             "output_prefix": output_prefix,
         }
+    except Exception as exc:
+        _raise_internal_error(exc)
+
+
+@app.get("/api/v1/jobs/{job_id}/result", tags=["jobs"])
+def job_result(
+    job_id: str,
+    x_api_key: Annotated[str | None, Header()] = None,
+) -> dict[str, Any]:
+    """List result artifacts for a submitted job (default output prefix).
+
+    Returns ``status='complete'`` with artifact names once the worker has
+    produced output, otherwise ``status='pending'``.
+    """
+    _verify_api_key(x_api_key)
+
+    import re
+
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", job_id):
+        raise HTTPException(status_code=400, detail="Invalid job_id.")
+
+    try:
+        from shieldlab.backends import get_backend, load_config as _load_backend_config
+
+        backend_cfg = _load_backend_config()
+        backend = get_backend(backend_cfg)
+        prefix = f"jobs/{job_id}/"
+        try:
+            artifacts = backend.list_blobs(backend_cfg.output_container, prefix)
+        except NotImplementedError:
+            artifacts = []
+        return {
+            "status": "complete" if artifacts else "pending",
+            "job_id": job_id,
+            "artifacts": artifacts,
+        }
+    except HTTPException:
+        raise
     except Exception as exc:
         _raise_internal_error(exc)
