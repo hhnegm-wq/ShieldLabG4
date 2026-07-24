@@ -38,7 +38,7 @@ discovered in the 2026-06-29/30 honest assessment.
 | 3 | CI/security/release-gate workflows never executed | P1 | 🟡 |
 | 4 | Nothing deployed (Bicep/AKS are templates only) | P2 | 🔴 |
 | 5 | Geant4 → cloud worker path unproven end-to-end | P2 | 🔴 |
-| 6 | No real product layer (auth stub, no user store, no billing) | P3 | 🟡 |
+| 6 | Product/SaaS layer: real API-key auth ✅, but no user store / billing yet | P3 | 🟡 |
 | 7 | RC residuals: console 404s, runtime warnings, Playwright smoke skipped | P4 | 🟢 |
 | 8 | Papers unsubmitted; metadata placeholders, no DOI | P5 | 🟡/🔴 |
 
@@ -59,7 +59,7 @@ rollback, collaboration, and CI become possible. This single phase unblocks Phas
 | P0.6 | Create GitHub repo + add remote + first push | 🟡 | Code visible on GitHub; default branch protected |
 | P0.7 | Branch protection: require PR + green CI before merge to `main` | 🟡 | Direct pushes to `main` blocked |
 
-**Dependencies:** none. **Status:** P0.1–P0.5 ✅ (this cycle); P0.6–P0.7 🟡 pending your GitHub auth.
+**Dependencies:** none. **Status:** ✅ **P0.1–P0.7 complete** — baseline committed, pushed to GitHub (`hhnegm-wq/ShieldLabG4`), branch protection enabled on `main`.
 
 ---
 
@@ -77,7 +77,7 @@ rollback, collaboration, and CI become possible. This single phase unblocks Phas
 | P1.5 | Pin GitHub Actions to commit SHAs (supply-chain hardening) | 🟢 | All `uses:` pinned |
 | P1.6 | Add Dependabot/renovate for deps + actions | 🟢 | Update PRs open automatically |
 
-**Dependencies:** P0.6. **Status:** ☐ (blocked on P0.6 push).
+**Dependencies:** P0.6. **Status:** ✅ **P1.1–P1.6 complete** — all three workflows green (Release Validation Gate, Security Scanning, UI Smoke); actions SHA-pinned; Dependabot active; README badges added (2026-07-24).
 
 ---
 
@@ -134,7 +134,7 @@ becomes a full PASS.
 | P4.5 | Visual-regression baselines committed & gated | 🟢 | `tests/visual` runs in CI |
 | P4.6 | Full action-by-action click-matrix coverage | 🟢 | Every conditional UI branch exercised by a test |
 
-**Dependencies:** P0. **Status:** P4.1 ✅ (this cycle); rest ⏳/☐.
+**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.3 (console-404 live re-check), P4.5 (visual-regression gating), P4.6 (exhaustive click matrix).
 
 ---
 
@@ -173,7 +173,7 @@ real cloud spend and product scope.
 
 ---
 
-## What was executed in this cycle (2026-06-30)
+## What was executed in the 2026-06-30 cycle
 
 - ✅ **P0.1–P0.5** — Repository placed under version control with a verified clean
   baseline commit and `v1.0.0-rc1` tag (see commit log).
@@ -181,8 +181,31 @@ real cloud spend and product scope.
   evaluation; valid-domain values unchanged.
 - ✅ This roadmap authored.
 
+## What was executed in the 2026-07-24 cycle
+
+- ✅ **P0.6 / P0.7** — Pushed to GitHub (`hhnegm-wq/ShieldLabG4`); branch protection on
+  `main` (required `release-gate` check, PR flow, no force-push/delete).
+- ✅ **P1.1–P1.6** — All three workflows run **green** (Release Validation Gate,
+  Security Scanning, UI Smoke); GitHub Actions **SHA-pinned**; **Dependabot** active;
+  **P1.4** CI + license + Python badges added to `README.md`.
+- ✅ **P4.4** — Playwright UI smoke runs **non-skipped** in CI with a no-skip gate
+  (`scripts/ci_ui_smoke_gate.sh` sets `SHIELDLAB_UI_SMOKE=1` and fails on any skip).
+- ✅ **P4.2** — Comparison-page legends always pass labeled artists; UI smoke renders
+  every page green (no legend crash).
+- ✅ **Cloud-free deployment path (new, beyond the original roadmap)** — pluggable
+  `shieldlab.backends` (LocalBackend = SQLite + filesystem; AzureBackend preserved) and
+  a one-command **Docker Compose** stack (UI + API + worker), validated end-to-end on
+  Docker (submit → worker → artifact → result). See `deploy/free-tier-oracle.md`.
+- ✅ **Security hardening (new)** — fixed an API 500 (uuid), verified no worker shell
+  injection, added an **auto-HTTPS Caddy reverse proxy** (opt-in `proxy` profile) plus
+  an outermost **per-IP flood/brute-force throttle**; secure-by-default API keys and
+  full OWASP security headers. Full suite **238 passing**; CI green.
+
 ## What needs your go-ahead next
 
-1. 🟡 **GitHub:** authorize repo creation + push (P0.6) — unblocks all CI and the papers.
-2. 🔴 **Azure:** approve provisioning (P2) — carries cloud spend; I will run `what-if` first.
-3. 🟡 **Identity:** ORCID / institution / funding strings for P5 metadata.
+1. 🔴 **Azure (P2):** approve provisioning — carries cloud spend; deferred by you to a
+   later step. I will run `what-if` first when you're ready.
+2. 🟡 **Product/SaaS (P3):** decide the user store (Entra External ID / B2C or managed
+   Postgres) and provide a Stripe account for billing.
+3. 🟡 **Publication (P5):** make the repo public, mint a Zenodo DOI, and supply ORCID /
+   institution / funding strings; then approve the (irreversible) journal submissions.
