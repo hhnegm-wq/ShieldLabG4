@@ -151,9 +151,43 @@ def default_rate_limiter() -> RateLimiter:
     return RateLimiter(rpm)
 
 
+def global_rate_limiter() -> RateLimiter:
+    """Per-client-IP limiter applied to *every* request (authenticated or not).
+
+    Defense-in-depth against L7 floods and credential brute-forcing: unlike the
+    per-key limiter, this throttles unauthenticated and failed-auth traffic too.
+    Tune with ``SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN`` (default 120/min per IP).
+    """
+    rpm = int(os.environ.get("SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN", "120"))
+    return RateLimiter(rpm)
+
+
+def _trust_proxy() -> bool:
+    return os.environ.get("SHIELDLAB_TRUST_PROXY", "").lower() in {"1", "true", "yes"}
+
+
+def client_ip(scope_client: tuple | None, x_forwarded_for: str | None) -> str:
+    """Resolve the client IP used for rate limiting.
+
+    When ``SHIELDLAB_TRUST_PROXY`` is set (the app runs behind a trusted reverse
+    proxy such as Caddy), the left-most ``X-Forwarded-For`` hop is trusted.
+    Otherwise the socket peer address is used, so a client cannot spoof its IP
+    with a forged header when the app is exposed directly.
+    """
+    if _trust_proxy() and x_forwarded_for:
+        first = x_forwarded_for.split(",")[0].strip()
+        if first:
+            return first
+    if scope_client:
+        return scope_client[0]
+    return "unknown"
+
+
 __all__ = [
     "allowed_origins",
     "verify_api_key",
     "RateLimiter",
     "default_rate_limiter",
+    "global_rate_limiter",
+    "client_ip",
 ]

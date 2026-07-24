@@ -47,6 +47,7 @@ Notes
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 import math
 import os
@@ -60,6 +61,12 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 logger = logging.getLogger(__name__)
+
+
+def _key_fp(api_key: str) -> str:
+    """Non-reversible fingerprint of an API key, safe to write to logs."""
+    return hashlib.sha256(api_key.encode("utf-8")).hexdigest()[:12]
+
 
 # ---------------------------------------------------------------------------
 # Config helpers
@@ -201,7 +208,7 @@ class QuotaMiddleware(BaseHTTPMiddleware):
         )
         if not allowed:
             logger.warning(
-                "Quota exceeded (jobs): key=%.8s… retry_after=%ds", api_key, retry_after
+                "Quota exceeded (jobs): key_fp=%s retry_after=%ds", _key_fp(api_key), retry_after
             )
             return self._quota_response("job_quota_exceeded", retry_after)
 
@@ -214,7 +221,7 @@ class QuotaMiddleware(BaseHTTPMiddleware):
         )
         if not allowed:
             logger.warning(
-                "Quota exceeded (cpu): key=%.8s… retry_after=%ds", api_key, retry_after
+                "Quota exceeded (cpu): key_fp=%s retry_after=%ds", _key_fp(api_key), retry_after
             )
             return self._quota_response("cpu_quota_exceeded", retry_after)
 

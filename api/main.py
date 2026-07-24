@@ -74,11 +74,18 @@ app = FastAPI(
     license_info={"name": "AGPL-3.0 (free tier); Commercial (pro tier)"},
 )
 
-from api.security import allowed_origins, verify_api_key, default_rate_limiter
+from api.security import (
+    allowed_origins,
+    verify_api_key,
+    default_rate_limiter,
+    global_rate_limiter,
+    client_ip,
+)
 from api.telemetry import TracingMiddleware, configure_json_logging
 from api.middleware.quota import QuotaMiddleware
 
 _RATE_LIMITER = default_rate_limiter()
+_GLOBAL_RATE_LIMITER = global_rate_limiter()
 
 configure_json_logging()
 _LOG = logging.getLogger(__name__)
@@ -145,6 +152,43 @@ class SecurityHeadersMiddleware:
         await self.app(scope, receive, send_with_security_headers)
 
 
+class GlobalRateLimitMiddleware:
+    """Throttle *all* HTTP requests per client IP (defense-in-depth).
+
+    Runs outermost so floods, unauthenticated probes, and credential
+    brute-force attempts are rejected with 429 before any auth, body-reading,
+    or routing work happens. The per-key limiter in ``_verify_api_key`` still
+    applies on top for authenticated traffic.
+    """
+
+    def __init__(self, app: ASGIApp, limiter: Any = None) -> None:
+        self.app = app
+        self.limiter = limiter or _GLOBAL_RATE_LIMITER
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        raw_headers: dict[bytes, bytes] = {k.lower(): v for k, v in scope.get("headers", [])}
+        xff = raw_headers.get(b"x-forwarded-for")
+        xff_str = xff.decode("latin-1") if xff else None
+        ip = client_ip(scope.get("client"), xff_str)
+
+        try:
+            self.limiter.hit(ip)
+        except HTTPException as exc:
+            from starlette.responses import JSONResponse
+            await JSONResponse(
+                {"detail": exc.detail},
+                status_code=exc.status_code,
+                headers=exc.headers or None,
+            )(scope, receive, send)
+            return
+
+        await self.app(scope, receive, send)
+
+
 app.add_middleware(TracingMiddleware)
 app.add_middleware(QuotaMiddleware)
 app.add_middleware(
@@ -157,8 +201,10 @@ app.add_middleware(
 )
 # SecurityHeadersMiddleware wraps CORS so headers appear on all responses
 app.add_middleware(SecurityHeadersMiddleware)
-# RequestSizeLimitMiddleware is outermost — rejects oversized bodies before routing
+# RequestSizeLimitMiddleware rejects oversized bodies before routing
 app.add_middleware(RequestSizeLimitMiddleware)
+# GlobalRateLimitMiddleware is outermost — per-IP flood/brute-force protection
+app.add_middleware(GlobalRateLimitMiddleware)
 
 
 def _verify_api_key(x_api_key: str | None) -> None:

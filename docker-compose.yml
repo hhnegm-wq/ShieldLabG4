@@ -25,6 +25,10 @@ x-app: &app
     SHIELDLAB_API_KEYS: ${SHIELDLAB_API_KEYS:-}
     SHIELDLAB_CORS_ORIGINS: ${SHIELDLAB_CORS_ORIGINS:-}
     SHIELDLAB_RATE_LIMIT_PER_MIN: ${SHIELDLAB_RATE_LIMIT_PER_MIN:-60}
+    # Per-IP flood/brute-force throttle applied to ALL requests (incl. failed auth).
+    SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN: ${SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN:-120}
+    # Trust X-Forwarded-For only when running behind the Caddy proxy (profile: proxy).
+    SHIELDLAB_TRUST_PROXY: ${SHIELDLAB_TRUST_PROXY:-0}
     SHIELDLAB_DEV: ${SHIELDLAB_DEV:-0}
     # UI tier auth (self-hosted Pro / JWT).
     SHIELDLAB_LICENSE_KEY: ${SHIELDLAB_LICENSE_KEY:-}
@@ -72,5 +76,28 @@ services:
       retries: 5
       start_period: 30s
 
+  # Opt-in auto-HTTPS reverse proxy. Enable with:  docker compose --profile proxy up -d
+  # Publishes only 80/443; terminates TLS and forwards to api + ui internally.
+  caddy:
+    image: caddy:2
+    container_name: shieldlab-caddy
+    profiles: ["proxy"]
+    restart: unless-stopped
+    depends_on:
+      - api
+      - ui
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SHIELDLAB_DOMAIN: ${SHIELDLAB_DOMAIN:-localhost}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
 volumes:
   shieldlab-data:
+  caddy-data:
+  caddy-config:

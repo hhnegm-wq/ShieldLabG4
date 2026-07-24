@@ -70,17 +70,50 @@ UI_PORT=80 API_PORT=8080 docker compose up -d
 - **Move to Azure later** with `SHIELDLAB_BACKEND=azure` plus the Azure storage
   variables — **no code changes**.
 
-## HTTPS (recommended for real users)
+## Secure it for the public internet
 
-Put a reverse proxy with automatic TLS in front, e.g. **Caddy**:
+The stack is **secure-by-default**: with no API keys configured, every protected
+API route returns `503` until you set them. Before exposing it to real users:
 
-```caddyfile
-your-domain.com {
-    reverse_proxy localhost:8501
-}
-api.your-domain.com {
-    reverse_proxy localhost:8000
-}
+### 1. Configure API keys + secrets
+
+```bash
+cp .env.example .env      # .env is git-ignored; never commit it
+# Generate a key and its SHA-256 hash:
+KEY=$(openssl rand -hex 32); echo "key=$KEY"; printf '%s' "$KEY" | sha256sum
+# Then edit .env and set ONE of:
+#   SHIELDLAB_API_KEYS=<the-key>              # simplest
+#   SHIELDLAB_API_KEY_HASHES=<the-sha256>     # keeps no plaintext on disk
+# plus a strong SHIELDLAB_JWT_SECRET for UI Pro tokens.
 ```
 
-or expose it instantly without opening ports using a **Cloudflare Tunnel**.
+### 2. Turn on automatic HTTPS (bundled Caddy)
+
+A Caddy reverse proxy ships as an opt-in `proxy` profile. It terminates TLS
+(automatic Let's Encrypt for a real domain), redirects HTTP→HTTPS, and forwards
+to the API + UI on the internal network — so you expose only **80/443**:
+
+```bash
+# point your domain's DNS A/AAAA record at the VM first, then:
+SHIELDLAB_DOMAIN=shield.example.com SHIELDLAB_TRUST_PROXY=1 \
+  docker compose --profile proxy up -d --build
+```
+
+- **UI:**  `https://shield.example.com/`
+- **API:** `https://shield.example.com/api/v1/...`
+
+Open only **80** and **443** (and drop 8000/8501) in the Oracle Security List:
+
+```bash
+sudo iptables -I INPUT -p tcp --dport 80  -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+```
+
+`SHIELDLAB_TRUST_PROXY=1` lets the app read the real client IP from the proxy
+for its built-in **per-IP rate limiting** (flood / brute-force protection); the
+`SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN` (default 120) tunes it. Keep it `0` when
+running without the proxy so a forged `X-Forwarded-For` cannot spoof the source.
+
+> No domain yet? A **Cloudflare Tunnel** gives instant TLS without opening any
+> inbound ports.
+

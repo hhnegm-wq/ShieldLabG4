@@ -1,0 +1,38 @@
+# ShieldLab G4 — auto-HTTPS reverse proxy (Caddy).
+#
+# Terminates TLS and forwards to the API and UI containers on the internal
+# compose network. For a real public hostname Caddy obtains and renews a
+# publicly-trusted certificate automatically (Let's Encrypt / ZeroSSL); for
+# `localhost` it uses a local internal CA so you can smoke-test HTTPS locally.
+#
+#   SHIELDLAB_DOMAIN=shield.example.com docker compose --profile proxy up -d
+#
+# Only ports 80/443 need to be open at the firewall; keep 8000/8501 private.
+
+{$SHIELDLAB_DOMAIN:localhost} {
+	encode zstd gzip
+
+	# REST API — every route is served under /api/*
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	# Streamlit UI — everything else (WebSocket upgrades handled automatically)
+	handle {
+		reverse_proxy ui:8501
+	}
+
+	# Edge security headers (defense-in-depth; the API sets its own as well).
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

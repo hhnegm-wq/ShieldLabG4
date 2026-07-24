@@ -7,7 +7,13 @@ import os
 import pytest
 from fastapi import HTTPException
 
-from api.security import RateLimiter, allowed_origins, verify_api_key
+from api.security import (
+    RateLimiter,
+    allowed_origins,
+    verify_api_key,
+    client_ip,
+    global_rate_limiter,
+)
 
 
 @pytest.mark.unit
@@ -79,3 +85,30 @@ def test_rate_limiter_blocks_after_limit() -> None:
     with pytest.raises(HTTPException) as exc:
         rl.hit("k")
     assert exc.value.status_code == 429
+
+
+@pytest.mark.unit
+def test_client_ip_ignores_xff_when_proxy_untrusted(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SHIELDLAB_TRUST_PROXY", raising=False)
+    # X-Forwarded-For must NOT be trusted when the app is exposed directly.
+    assert client_ip(("10.0.0.5", 5555), "1.2.3.4") == "10.0.0.5"
+
+
+@pytest.mark.unit
+def test_client_ip_uses_xff_left_hop_when_proxy_trusted(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SHIELDLAB_TRUST_PROXY", "1")
+    assert client_ip(("10.0.0.5", 5555), "1.2.3.4, 10.0.0.1") == "1.2.3.4"
+
+
+@pytest.mark.unit
+def test_client_ip_falls_back_to_unknown(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SHIELDLAB_TRUST_PROXY", raising=False)
+    assert client_ip(None, None) == "unknown"
+
+
+@pytest.mark.unit
+def test_global_rate_limiter_respects_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN", "5")
+    rl = global_rate_limiter()
+    assert isinstance(rl, RateLimiter)
+    assert rl.limit == 5
