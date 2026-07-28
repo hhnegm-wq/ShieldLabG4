@@ -7,10 +7,14 @@ import pytest
 from ui.components.navigation import page_href, visible_page_specs
 
 
-pytestmark = pytest.mark.skipif(
-    os.environ.get("SHIELDLAB_UI_SMOKE", "0") != "1",
-    reason="UI smoke disabled. Set SHIELDLAB_UI_SMOKE=1 to run.",
-)
+pytestmark = [
+    pytest.mark.ui,
+    pytest.mark.network,
+    pytest.mark.skipif(
+        os.environ.get("SHIELDLAB_UI_SMOKE", "0") != "1",
+        reason="UI smoke disabled. Set SHIELDLAB_UI_SMOKE=1 to run.",
+    ),
+]
 
 
 def test_platform_pages_smoke():
@@ -67,4 +71,34 @@ def test_key_actions_visible():
                 if btn.count() == 0:
                     btn = page.get_by_text(label)
                 assert btn.count() > 0, f"Action '{label}' not found on {route}"
+        browser.close()
+
+
+def test_quick_actions_click_through() -> None:
+    playwright = pytest.importorskip("playwright.sync_api")
+    from playwright.sync_api import sync_playwright
+
+    base_url = os.environ.get("SHIELDLAB_BASE_URL", "http://localhost:8501")
+    targets = [
+        ("Configure Study", page_href("study_builder"), "Study Builder"),
+        ("Run Study", page_href("run_study"), "Run Study"),
+        ("Review Results", page_href("results_explorer"), "Results Explorer"),
+    ]
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        for label, route, expected_text in targets:
+            page.goto(base_url + "/", wait_until="domcontentloaded", timeout=30_000)
+            page.wait_for_timeout(900)
+            quick_actions = page.get_by_role("navigation", name="Quick actions")
+            quick_actions.get_by_role("link", name=label, exact=True).click()
+            page.wait_for_timeout(1200)
+            assert page.url.endswith(route), f"Quick action '{label}' did not navigate to {route}"
+            body = page.inner_text("body")
+            assert expected_text in body, (
+                f"Quick action '{label}' landed on {page.url} but '{expected_text}' was not present"
+            )
+
         browser.close()

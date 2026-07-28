@@ -17,6 +17,16 @@
 		reverse_proxy api:8000
 	}
 
+	# Streamlit nested-page direct loads can trigger follow-on requests like
+	# /study_builder/_stcore/health. Those paths are not real routes on the app;
+	# Streamlit expects /_stcore/* at the root. Normalize them at the edge before
+	# proxying so direct page loads do not emit browser-console 404 noise.
+	@streamlit_nested_internal path_regexp streamlitNested ^/[^/]+/(_stcore(?:/.*)?|favicon\.png)$
+	handle @streamlit_nested_internal {
+		rewrite * /{re.streamlitNested.1}
+		reverse_proxy ui:8501
+	}
+
 	# Streamlit UI — everything else (WebSocket upgrades handled automatically)
 	handle {
 		reverse_proxy ui:8501

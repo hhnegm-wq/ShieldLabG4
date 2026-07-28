@@ -134,7 +134,7 @@ becomes a full PASS.
 | P4.5 | Visual-regression baselines committed & gated | 🟢 | `tests/visual` runs in CI |
 | P4.6 | Full action-by-action click-matrix coverage | 🟢 | Every conditional UI branch exercised by a test |
 
-**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ☐ P4.3 (investigated on 2026-07-28; root cause confirmed as Streamlit nested-path `/_stcore/*` requests on direct page loads; no safe local fix shipped yet), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.5 (visual-regression gating), P4.6 (exhaustive click matrix). 
+**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ⏳ P4.3 (root cause confirmed; Caddy proxy rewrite implemented to normalize nested `/_stcore/*` requests, but live Docker validation is still pending on a Docker-enabled host), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`), ✅ P4.5 (committed baseline + dedicated CI workflow), ⏳ P4.6 (click-through coverage expanded for quick-action workflow entry points, but not every conditional branch yet). 
 
 ---
 
@@ -211,10 +211,19 @@ real cloud spend and product scope.
   shared navigation contract (`visible_page_specs()` / `page_href()`) instead of
   stale hard-coded page lists, and `tests/visual/test_visual_regression.py` now
   does the same for the results explorer route.
-- ☐ **P4.3 not yet closed** — The attempted `/?page=...` route substitution removed
-  the 404s but did not actually select the intended Streamlit page, so it was not
-  shipped. A true fix likely belongs in the deployment/proxy layer or a deeper
-  Streamlit-native navigation refactor.
+- ✅ **P4.5** — Promoted historical stable screenshots into a committed
+  `tests/visual/baseline/` set and turned `tests/visual/test_visual_regression.py`
+  into an exact pixel baseline gate. Added a dedicated `visual-regression.yml`
+  CI workflow plus failure artifact upload.
+- ⏳ **P4.3 advanced** — The failed `/?page=...` route substitution was reverted,
+  and the likely real fix was implemented at the proxy layer in `deploy/Caddyfile`:
+  nested requests like `/study_builder/_stcore/health` are rewritten to
+  `/_stcore/health` before proxying to Streamlit. This is implemented and unit-tested,
+  but end-to-end execution still needs a Docker-enabled host because Docker Desktop
+  is currently unavailable in this environment.
+- ⏳ **P4.6 advanced** — Added Playwright quick-action click-through coverage for the
+  three primary workflow entry points (Configure Study, Run Study, Review Results),
+  so the gate now covers actual in-app navigation clicks instead of only direct loads.
 
 ## What needs your go-ahead next
 

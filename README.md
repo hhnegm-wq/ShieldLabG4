@@ -3,6 +3,7 @@
 [![Release Validation Gate](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/release-validation-gate.yml/badge.svg)](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/release-validation-gate.yml)
 [![Security Scanning](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/security.yml/badge.svg)](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/security.yml)
 [![UI Smoke (Playwright)](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/ui-smoke.yml/badge.svg)](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/ui-smoke.yml)
+[![Visual Regression](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/visual-regression.yml/badge.svg)](https://github.com/hhnegm-wq/ShieldLabG4/actions/workflows/visual-regression.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 
