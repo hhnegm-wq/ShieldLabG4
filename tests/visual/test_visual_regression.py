@@ -34,7 +34,6 @@ from ui.components.navigation import NAV_SECTION_LABELS, page_href, visible_page
 
 pytestmark = [
     pytest.mark.ui,
-    pytest.mark.network,
     pytest.mark.skipif(
         os.environ.get("SHIELDLAB_UI_SMOKE", "0") != "1",
         reason="Visual regression disabled. Set SHIELDLAB_UI_SMOKE=1 to run.",

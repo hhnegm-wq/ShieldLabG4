@@ -9,7 +9,6 @@ from ui.components.navigation import page_href, visible_page_specs
 
 pytestmark = [
     pytest.mark.ui,
-    pytest.mark.network,
     pytest.mark.skipif(
         os.environ.get("SHIELDLAB_UI_SMOKE", "0") != "1",
         reason="UI smoke disabled. Set SHIELDLAB_UI_SMOKE=1 to run.",
@@ -94,7 +93,12 @@ def test_quick_actions_click_through() -> None:
             page.wait_for_timeout(900)
             quick_actions = page.get_by_role("navigation", name="Quick actions")
             quick_actions.get_by_role("link", name=label, exact=True).click()
-            page.wait_for_timeout(1200)
+            page.wait_for_url(f"**{route}", timeout=15_000)
+            page.wait_for_function(
+                "(expected) => Boolean(document.body && document.body.innerText.includes(expected))",
+                arg=expected_text,
+                timeout=15_000,
+            )
             assert page.url.endswith(route), f"Quick action '{label}' did not navigate to {route}"
             body = page.inner_text("body")
             assert expected_text in body, (
