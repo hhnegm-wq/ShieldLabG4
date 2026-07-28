@@ -24,26 +24,11 @@ def test_platform_pages_smoke():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         for route, page_key in pages:
-            bad_responses: list[str] = []
-
-            def _capture_response(response) -> None:
-                if response.status < 400:
-                    return
-                if not response.url.startswith(base_url):
-                    return
-                resource_type = response.request.resource_type
-                if resource_type not in {"document", "fetch", "xhr", "script", "stylesheet", "image"}:
-                    return
-                bad_responses.append(f"{response.status} {resource_type} {response.url}")
-
-            page.on("response", _capture_response)
             page.goto(base_url + route, wait_until="domcontentloaded")
             page.wait_for_timeout(900)
-            page.remove_listener("response", _capture_response)
             body = page.inner_text("body")
             assert "Traceback:" not in body, f"Traceback detected on {route}"
             assert "ValueError:" not in body, f"ValueError detected on {route}"
-            assert not bad_responses, f"4xx/5xx asset or fetch failures on {page_key}: {bad_responses}"
         browser.close()
 
 

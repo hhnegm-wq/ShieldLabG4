@@ -134,7 +134,7 @@ becomes a full PASS.
 | P4.5 | Visual-regression baselines committed & gated | 🟢 | `tests/visual` runs in CI |
 | P4.6 | Full action-by-action click-matrix coverage | 🟢 | Every conditional UI branch exercised by a test |
 
-**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ✅ P4.3 (custom links moved to Streamlit-safe `/?page=...` routes; browser-validated with 0 same-origin 4xxs across all 12 pages), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.5 (visual-regression gating), P4.6 (exhaustive click matrix). 
+**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ☐ P4.3 (investigated on 2026-07-28; root cause confirmed as Streamlit nested-path `/_stcore/*` requests on direct page loads; no safe local fix shipped yet), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.5 (visual-regression gating), P4.6 (exhaustive click matrix). 
 
 ---
 
@@ -203,14 +203,18 @@ real cloud spend and product scope.
 
 ## What was executed in the 2026-07-28 cycle
 
-- ✅ **P4.3** — Closed the browser console/static-route residual by switching the
-  UI's custom links from nested paths like `/study_builder` to Streamlit-safe
-  query routes like `/?page=study_builder`. Direct browser validation across all
-  12 pages showed **0 same-origin 4xx requests**.
-- ✅ **UI smoke hardening** — `tests/test_ui_playwright_smoke.py` now uses the
+- ✅ **P4.3 investigation** — Confirmed the residual root cause: direct loads of
+  Streamlit nested page paths (for example `/study_builder`) generate follow-on
+  requests such as `/study_builder/_stcore/health` and `/study_builder/_stcore/host-config`,
+  producing console 404s even though the page renders correctly.
+- ✅ **Navigation test hardening** — `tests/test_ui_playwright_smoke.py` now uses the
   shared navigation contract (`visible_page_specs()` / `page_href()`) instead of
-  stale hard-coded paths, and it now fails on same-origin 4xx asset/fetch/script
-  errors during page navigation so the residual cannot silently return.
+  stale hard-coded page lists, and `tests/visual/test_visual_regression.py` now
+  does the same for the results explorer route.
+- ☐ **P4.3 not yet closed** — The attempted `/?page=...` route substitution removed
+  the 404s but did not actually select the intended Streamlit page, so it was not
+  shipped. A true fix likely belongs in the deployment/proxy layer or a deeper
+  Streamlit-native navigation refactor.
 
 ## What needs your go-ahead next
 
