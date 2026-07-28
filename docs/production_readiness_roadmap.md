@@ -134,7 +134,7 @@ becomes a full PASS.
 | P4.5 | Visual-regression baselines committed & gated | 🟢 | `tests/visual` runs in CI |
 | P4.6 | Full action-by-action click-matrix coverage | 🟢 | Every conditional UI branch exercised by a test |
 
-**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.3 (console-404 live re-check), P4.5 (visual-regression gating), P4.6 (exhaustive click matrix).
+**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ✅ P4.3 (custom links moved to Streamlit-safe `/?page=...` routes; browser-validated with 0 same-origin 4xxs across all 12 pages), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`); ☐ P4.5 (visual-regression gating), P4.6 (exhaustive click matrix). 
 
 ---
 
@@ -200,6 +200,17 @@ real cloud spend and product scope.
   injection, added an **auto-HTTPS Caddy reverse proxy** (opt-in `proxy` profile) plus
   an outermost **per-IP flood/brute-force throttle**; secure-by-default API keys and
   full OWASP security headers. Full suite **238 passing**; CI green.
+
+## What was executed in the 2026-07-28 cycle
+
+- ✅ **P4.3** — Closed the browser console/static-route residual by switching the
+  UI's custom links from nested paths like `/study_builder` to Streamlit-safe
+  query routes like `/?page=study_builder`. Direct browser validation across all
+  12 pages showed **0 same-origin 4xx requests**.
+- ✅ **UI smoke hardening** — `tests/test_ui_playwright_smoke.py` now uses the
+  shared navigation contract (`visible_page_specs()` / `page_href()`) instead of
+  stale hard-coded paths, and it now fails on same-origin 4xx asset/fetch/script
+  errors during page navigation so the residual cannot silently return.
 
 ## What needs your go-ahead next
 

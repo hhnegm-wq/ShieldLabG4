@@ -14,7 +14,7 @@ from shieldlab.metadata import (
     ownership_lines,
 )
 from components.platform_settings import get_platform_settings, init_platform_settings
-from components.navigation import QUICK_ACTION_SPECS, build_navigation_sections, get_page_spec
+from components.navigation import QUICK_ACTION_SPECS, build_navigation_sections, get_page_spec, page_href
 from components.asset_integrity import check_critical_assets
 from components.logo import LOGO_PATH
 from components.enterprise_ui import enterprise_mode_enabled
@@ -83,7 +83,7 @@ def _render_shell_command_bar() -> None:
             <nav class="sl-shell-actions" aria-label="Quick actions">
                 {action_links}
             </nav>
-            <a class="sl-shell-user" href="/settings" target="_self" title="Open platform settings">
+            <a class="sl-shell-user" href="{page_href('settings')}" target="_self" title="Open platform settings">
                 <span class="sl-shell-avatar">SG</span>
                 <span class="sl-shell-user-meta">
                     <strong>ShieldLab User</strong>
@@ -131,7 +131,7 @@ pg.run()
 # hoisting (which previously caused a phantom empty link above the avatar).
 _tier_pill_class = "sl-user-tier-pill sl-user-tier-pill--pro" if _tier_label == "Pro" else "sl-user-tier-pill"
 st.sidebar.markdown(
-    f'<a class="sl-user-card" href="/settings" target="_self" title="Open platform settings">'
+    f'<a class="sl-user-card" href="{page_href("settings")}" target="_self" title="Open platform settings">'
     f'<span class="sl-user-avatar">SG</span>'
     f'<span class="sl-user-info">'
     f'<span class="sl-user-name">{PRODUCT_NAME}</span>'

@@ -36,17 +36,17 @@ class WorkflowSpec:
 
 PAGE_SPECS: tuple[PageSpec, ...] = (
     PageSpec("home", "home.py", "Home", ":material/dashboard:", "", "/", default=True),
-    PageSpec("study_builder", "study_builder.py", "Study Builder", ":material/science:", "Simulation", "/study_builder"),
-    PageSpec("run_study", "run_study.py", "Run Study", ":material/play_circle:", "Simulation", "/run_study"),
-    PageSpec("shielding_calculator", "shielding_calculator.py", "Shielding Calculator", ":material/calculate:", "Analysis", "/shielding_calculator"),
-    PageSpec("comparison", "comparison.py", "Material Comparison", ":material/bar_chart:", "Analysis", "/comparison"),
-    PageSpec("dose_rate", "dose_rate.py", "Dose-Rate Calculator", ":material/radiology:", "Analysis", "/dose_rate"),
-    PageSpec("results_explorer", "results_explorer.py", "Results Explorer", ":material/search:", "Analysis", "/results_explorer"),
-    PageSpec("literature_benchmarks", "literature_benchmarks.py", "Literature Benchmarks", ":material/menu_book:", "Analysis", "/literature_benchmarks"),
-    PageSpec("benchmark_dashboard", "benchmark_dashboard.py", "Benchmark Dashboard", ":material/insights:", "Analysis", "/benchmark_dashboard"),
-    PageSpec("methods", "methods.py", "Methods & References", ":material/description:", "Reference", "/methods"),
-    PageSpec("about", "about.py", "About & Legal", ":material/info:", "Reference", "/about"),
-    PageSpec("settings", "settings.py", "Settings", ":material/settings:", "Platform", "/settings"),
+    PageSpec("study_builder", "study_builder.py", "Study Builder", ":material/science:", "Simulation", "/?page=study_builder"),
+    PageSpec("run_study", "run_study.py", "Run Study", ":material/play_circle:", "Simulation", "/?page=run_study"),
+    PageSpec("shielding_calculator", "shielding_calculator.py", "Shielding Calculator", ":material/calculate:", "Analysis", "/?page=shielding_calculator"),
+    PageSpec("comparison", "comparison.py", "Material Comparison", ":material/bar_chart:", "Analysis", "/?page=comparison"),
+    PageSpec("dose_rate", "dose_rate.py", "Dose-Rate Calculator", ":material/radiology:", "Analysis", "/?page=dose_rate"),
+    PageSpec("results_explorer", "results_explorer.py", "Results Explorer", ":material/search:", "Analysis", "/?page=results_explorer"),
+    PageSpec("literature_benchmarks", "literature_benchmarks.py", "Literature Benchmarks", ":material/menu_book:", "Analysis", "/?page=literature_benchmarks"),
+    PageSpec("benchmark_dashboard", "benchmark_dashboard.py", "Benchmark Dashboard", ":material/insights:", "Analysis", "/?page=benchmark_dashboard"),
+    PageSpec("methods", "methods.py", "Methods & References", ":material/description:", "Reference", "/?page=methods"),
+    PageSpec("about", "about.py", "About & Legal", ":material/info:", "Reference", "/?page=about"),
+    PageSpec("settings", "settings.py", "Settings", ":material/settings:", "Platform", "/?page=settings"),
 )
 
 PAGE_BY_KEY = {spec.key: spec for spec in PAGE_SPECS}

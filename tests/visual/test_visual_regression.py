@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-from ui.components.navigation import NAV_SECTION_LABELS, visible_page_specs
+from ui.components.navigation import NAV_SECTION_LABELS, page_href, visible_page_specs
 
 pytestmark = pytest.mark.skipif(
     os.environ.get("SHIELDLAB_UI_SMOKE", "0") != "1",
@@ -127,7 +127,7 @@ def test_visual_no_download_button_wrap() -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         page = browser.new_page(viewport={"width": 1440, "height": 900})
-        page.goto(_BASE + "/results_explorer", wait_until="networkidle", timeout=20_000)
+        page.goto(_BASE + page_href("results_explorer"), wait_until="networkidle", timeout=20_000)
         page.wait_for_timeout(1_500)
 
         # Find all download buttons and check none are taller than wide
