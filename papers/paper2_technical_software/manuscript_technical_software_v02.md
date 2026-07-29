@@ -1,7 +1,7 @@
 # ShieldLab G4: A Reproducible, Secure, and Cloud-Ready Software Platform for Radiation Shielding Studies
 
 **Hani H. Negm**  
-*Department of Physics, **[AFFILIATION REQUIRED — DO NOT SUBMIT WITH PLACEHOLDER]***
+*Department of Physics, College of Science, Jouf University, Sakaka, Saudi Arabia*
 
 ---
 

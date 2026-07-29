@@ -3,9 +3,8 @@ title: "ShieldLab G4"
 message: "If you use this software, please cite it as below."
 type: software
 authors:
-  - family-names: "ShieldLab G4 Team"
-    name-particle: ""
-    given-names: ""
+  - family-names: "Negm"
+    given-names: "Hani H."
 repository-code: "https://github.com/hhnegm-wq/ShieldLabG4"
 license: "AGPL-3.0-or-later"
 version: "1.0.0"
@@ -25,7 +24,7 @@ preferred-citation:
   type: software
   title: "ShieldLab G4"
   authors:
-    - family-names: "ShieldLab G4 Team"
-      given-names: ""
+    - family-names: "Negm"
+      given-names: "Hani H."
   version: "1.0.0"
   year: 2026

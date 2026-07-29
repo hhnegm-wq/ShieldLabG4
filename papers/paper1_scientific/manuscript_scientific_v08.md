@@ -1,7 +1,7 @@
 # ShieldLab G4 v1.0.0: A Reproducible Analytical-to-Geant4 Validation Workflow for Radiation Shielding Materials
 
 **Hani H. Negm**  
-*Department of Physics, **[AFFILIATION REQUIRED — DO NOT SUBMIT WITH PLACEHOLDER]***
+*Department of Physics, College of Science, Jouf University, Sakaka, Saudi Arabia*
 
 ---
 
@@ -612,15 +612,15 @@ The ShieldLab G4 v1.0.0 source code, study configuration files (`configs/studies
 
 [10] Allison J *et al.* (2016). Recent developments in Geant4. *Nuclear Instruments and Methods in Physics Research A*, **835**, 186–225. https://doi.org/10.1016/j.nima.2016.06.125
 
-[11] Sternheimer R M, Berger M J, Seltzer S M (1984). Density effect for the ionization loss of charged particles in various substances. *Atomic Data and Nuclear Data Tables*, **30**(2), 261–271.
+[11] Sternheimer R M, Berger M J, Seltzer S M (1984). Density effect for the ionization loss of charged particles in various substances. *Atomic Data and Nuclear Data Tables*, **30**(2), 261–271. https://doi.org/10.1016/0092-640X(84)90002-0
 
-[12] Klein O, Nishina Y (1929). Über die Streuung von Strahlung durch freie Elektronen nach der neuen relativistischen Quantendynamik von Dirac. *Zeitschrift für Physik*, **52**(11–12), 853–868.
+[12] Klein O, Nishina Y (1929). Über die Streuung von Strahlung durch freie Elektronen nach der neuen relativistischen Quantendynamik von Dirac. *Zeitschrift für Physik*, **52**(11–12), 853–868. https://doi.org/10.1007/BF01366453
 
-[13] Koch H W, Motz J W (1959). Bremsstrahlung cross-section formulas and related data. *Reviews of Modern Physics*, **31**(4), 920–955.
+[13] Koch H W, Motz J W (1959). Bremsstrahlung cross-section formulas and related data. *Reviews of Modern Physics*, **31**(4), 920–955. https://doi.org/10.1103/RevModPhys.31.920
 
-[14] ICRP (1996). *Conversion Coefficients for Use in Radiological Protection Against External Radiation*. ICRP Publication 74. *Annals of the ICRP*, **26**(3–4).
+[14] ICRP (1996). *Conversion Coefficients for Use in Radiological Protection Against External Radiation*. ICRP Publication 74. *Annals of the ICRP*, **26**(3–4). https://www.icrp.org/publication.asp?id=ICRP%20Publication%2074
 
-[15] Bragg W H, Kleeman R (1905). On the α particles of radium, and their loss of range in passing through various atoms and molecules. *Philosophical Magazine*, **10**(57), 318–340.
+[15] Bragg W H, Kleeman R (1905). On the α particles of radium, and their loss of range in passing through various atoms and molecules. *Philosophical Magazine*, **10**(57), 318–340. https://doi.org/10.1080/14786440509463378
 
 [16] Negm H H *et al.* (2025). Evaluation of Radiation Shielding Parameters of Different Metallic Glass Compositions for α, β, γ, n, and p Radiation. *Journal of Electronic Materials*. https://doi.org/10.1007/s11664-025-11830-w
 
