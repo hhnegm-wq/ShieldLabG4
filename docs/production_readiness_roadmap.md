@@ -134,7 +134,7 @@ becomes a full PASS.
 | P4.5 | Visual-regression baselines committed & gated | 🟢 | `tests/visual` runs in CI |
 | P4.6 | Full action-by-action click-matrix coverage | 🟢 | Every conditional UI branch exercised by a test |
 
-**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ⏳ P4.3 (root cause confirmed; Caddy proxy rewrite implemented to normalize nested `/_stcore/*` requests, but live Docker validation is still pending on a Docker-enabled host), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`), ✅ P4.5 (committed baseline + dedicated CI workflow), ⏳ P4.6 (click-through coverage expanded for quick-action workflow entry points, but not every conditional branch yet). 
+**Dependencies:** P0. **Status:** ✅ P4.1, ✅ P4.2 (legends pass labeled artists; UI smoke renders every page green), ✅ P4.3 (Caddy proxy rewrite implemented **and validated live** against nested `/_stcore/*` requests on 2026-07-30), ✅ P4.4 (non-skipped Playwright gate in CI via `scripts/ci_ui_smoke_gate.sh`), ✅ P4.5 (committed baseline + dedicated CI workflow), ⏳ P4.6 (click-through coverage expanded for quick-action workflow entry points, but not every conditional branch yet). 
 
 ---
 
@@ -224,6 +224,18 @@ real cloud spend and product scope.
 - ⏳ **P4.6 advanced** — Added Playwright quick-action click-through coverage for the
   three primary workflow entry points (Configure Study, Run Study, Review Results),
   so the gate now covers actual in-app navigation clicks instead of only direct loads.
+
+## What was executed in the 2026-07-30 cycle
+
+- ✅ **P4.3 closed** — Started Docker Desktop, rebuilt the stack, launched the
+  Caddy proxy profile, and validated end-to-end that direct nested requests such
+  as `/study_builder/_stcore/health` and `/settings/_stcore/host-config` return
+  HTTP 200 through the proxy instead of 404.
+- ✅ **P3 advanced (hosted auth scaffolding)** — Added optional Supabase-backed
+  hosted user authentication and role/tier mapping to the UI, deployment env
+  pass-throughs for Docker and App Service, auth tests, and `deploy/supabase_init.sql`.
+  This is code-complete and CI-green, but still blocked externally by Supabase
+  free-project capacity / billing choice before a real hosted project can be used.
 
 ## What needs your go-ahead next
 

@@ -87,6 +87,32 @@ KEY=$(openssl rand -hex 32); echo "key=$KEY"; printf '%s' "$KEY" | sha256sum
 # plus a strong SHIELDLAB_JWT_SECRET for UI Pro tokens.
 ```
 
+### 1b. Optional real user accounts (Supabase)
+
+If you want hosted sign-in/sign-up/password reset for real users instead of the
+local license/JWT fallback, set these in `.env` after you create or resume a
+Supabase project:
+
+```bash
+SHIELDLAB_SUPABASE_URL=https://<project-ref>.supabase.co
+SHIELDLAB_SUPABASE_ANON_KEY=<public-anon-key>
+SHIELDLAB_SUPABASE_REDIRECT_TO=https://shield.example.com/
+```
+
+Then apply `deploy/supabase_init.sql` in the Supabase SQL editor. It creates the
+`public.user_profiles` table, sync trigger, and row-level security policies that
+ShieldLab G4 expects for hosted account metadata (`tier`, `role`).
+
+Recommended initial roles:
+
+- `viewer` → free read-only/default user
+- `operator` → pro job-submitting user
+- `admin` → pro admin user
+
+The Streamlit UI automatically shows an account panel when the Supabase values
+are present; without them the existing self-hosted license/JWT flow continues to
+work.
+
 ### 2. Turn on automatic HTTPS (bundled Caddy)
 
 A Caddy reverse proxy ships as an opt-in `proxy` profile. It terminates TLS
@@ -113,6 +139,10 @@ sudo iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 for its built-in **per-IP rate limiting** (flood / brute-force protection); the
 `SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN` (default 120) tunes it. Keep it `0` when
 running without the proxy so a forged `X-Forwarded-For` cannot spoof the source.
+
+This Caddy profile has been validated against the Streamlit nested-route issue:
+direct loads like `/study_builder` no longer emit `/_stcore/*` 404 noise once
+requests are routed through the proxy.
 
 > No domain yet? A **Cloudflare Tunnel** gives instant TLS without opening any
 > inbound ports.
