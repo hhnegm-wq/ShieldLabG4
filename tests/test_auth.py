@@ -267,3 +267,54 @@ class TestDevOverride:
         os.environ.pop("SHIELDLAB_JWT_SECRET", None)
         auth.set_tier_override("pro")
         assert auth.get_user_tier() == "pro"
+
+
+class TestSupabaseHelpers:
+    def test_supabase_disabled_without_env(self):
+        auth = _fresh_auth()
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("SHIELDLAB_SUPABASE_URL", None)
+            os.environ.pop("SHIELDLAB_SUPABASE_ANON_KEY", None)
+            assert auth._supabase_enabled() is False
+
+    def test_context_from_supabase_user_reads_metadata(self):
+        auth = _fresh_auth()
+
+        class DummyUser:
+            email = "user@example.com"
+            app_metadata = {"tier": "pro", "role": "operator"}
+            user_metadata = {}
+
+        ctx = auth._context_from_supabase_user(DummyUser())
+        assert ctx is not None
+        assert ctx.email == "user@example.com"
+        assert ctx.tier == "pro"
+        assert ctx.role == "operator"
+        assert ctx.provider == "supabase"
+
+    def test_operator_role_implies_pro_when_tier_missing(self):
+        auth = _fresh_auth()
+
+        class DummyUser:
+            email = "operator@example.com"
+            app_metadata = {"role": "operator"}
+            user_metadata = {}
+
+        ctx = auth._context_from_supabase_user(DummyUser())
+        assert ctx is not None
+        assert ctx.tier == "pro"
+        assert ctx.role == "operator"
+
+    def test_get_user_context_uses_supabase_context_first(self):
+        auth = _fresh_auth()
+        fake_ctx = auth.UserContext(
+            email="admin@example.com",
+            tier="pro",
+            role="admin",
+            provider="supabase",
+        )
+        with patch.object(auth, "_load_supabase_context", return_value=fake_ctx):
+            ctx = auth.get_user_context()
+            assert ctx == fake_ctx
+            assert auth.get_user_tier() == "pro"
+            assert auth.get_user_role() == "admin"

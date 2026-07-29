@@ -48,10 +48,18 @@ jobs:
             az webapp config appsettings set \
               --resource-group "$AZURE_RESOURCE_GROUP" \
               --name "$AZURE_WEBAPP_NAME" \
-              --settings WEBSITES_PORT=8000 SCM_DO_BUILD_DURING_DEPLOYMENT=true
+              --settings \
+                WEBSITES_PORT=8000 \
+                SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+                SHIELDLAB_SUPABASE_URL="$SHIELDLAB_SUPABASE_URL" \
+                SHIELDLAB_SUPABASE_ANON_KEY="$SHIELDLAB_SUPABASE_ANON_KEY" \
+                SHIELDLAB_SUPABASE_REDIRECT_TO="$SHIELDLAB_SUPABASE_REDIRECT_TO"
         env:
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+          SHIELDLAB_SUPABASE_URL: ${{ secrets.SHIELDLAB_SUPABASE_URL }}
+          SHIELDLAB_SUPABASE_ANON_KEY: ${{ secrets.SHIELDLAB_SUPABASE_ANON_KEY }}
+          SHIELDLAB_SUPABASE_REDIRECT_TO: ${{ secrets.SHIELDLAB_SUPABASE_REDIRECT_TO }}
 
       - name: Optional Easy Auth enforcement (Microsoft Entra ID)
         uses: azure/cli@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2

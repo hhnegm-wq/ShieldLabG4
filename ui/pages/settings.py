@@ -30,6 +30,7 @@ from components.enterprise_ui import (
     render_platform_capability_grid,
     render_status_bar,
 )
+from auth import get_user_context
 
 copy = PAGE_COPY["settings"]
 settings = get_platform_settings()
@@ -46,6 +47,18 @@ hero_body = str(
 render_page_hero(hero_title, hero_body, hero_kicker)
 _render_breadcrumb_settings(["ShieldLab G4", "Platform"], current="Settings")
 st.caption(str(copy["caption"]))
+
+_user_ctx = get_user_context()
+
+st.divider()
+st.subheader("Account")
+st.caption("Current signed-in account, capability tier, and hosted-auth provider state.")
+render_status_bar([
+    {"label": "Provider", "value": _user_ctx.provider, "state": "ok" if _user_ctx.provider != "local" else "neutral"},
+    {"label": "Role", "value": _user_ctx.role, "state": "ok" if _user_ctx.role in {"operator", "admin"} else "neutral"},
+    {"label": "Tier", "value": _user_ctx.tier.upper(), "state": "ok" if _user_ctx.tier == "pro" else "neutral"},
+    {"label": "Email", "value": _user_ctx.email or "not signed in", "state": "neutral"},
+])
 
 preset_labels = dict(
     copy.get(

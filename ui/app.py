@@ -112,9 +112,10 @@ if asset_report.missing:
         for missing in asset_report.missing:
             st.markdown(f"- {missing}")
 
-# Dev tier toggle (only visible when SHIELDLAB_DEV env var is set)
+# Hosted-auth sidebar + dev tier toggle (dev override only shown in development)
 try:
-    from auth import render_tier_dev_toggle, get_tier as _get_tier
+    from auth import render_auth_sidebar, render_tier_dev_toggle, get_tier as _get_tier
+    render_auth_sidebar()
     render_tier_dev_toggle()
     _tier_label = "Pro" if _get_tier() == "pro" else "Free"
 except Exception:
