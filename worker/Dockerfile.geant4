@@ -1,0 +1,43 @@
+FROM carlomt/geant4:latest
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONPATH=/app \
+    SHIELDLAB_BACKEND=local \
+    SHIELDLAB_LOCAL_DATA_DIR=/data \
+    SHIELDLAB_RESULTS_DIR=/app/build/results \
+    SHIELDLAB_RUN_MANAGER=serial
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        python3 \
+        python3-pip \
+        python3-venv \
+        python-is-python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.appservice.txt ./
+COPY api/requirements.txt ./api/requirements.txt
+COPY python/ ./python/
+
+RUN python -m pip install --upgrade pip "setuptools>=83.0.0" wheel \
+    && python -m pip install --prefer-binary -r requirements.appservice.txt
+
+COPY . .
+COPY worker/entrypoint_geant4.sh /usr/local/bin/entrypoint-geant4.sh
+
+RUN chmod +x /usr/local/bin/entrypoint-geant4.sh \
+    && bash -lc "source /opt/geant4/bin/geant4.sh && cmake -S /app -B /app/build -DWITH_GEANT4_UIVIS=OFF -DCMAKE_BUILD_TYPE=Release && cmake --build /app/build -j1" \
+    && useradd --system --create-home --uid 10001 appuser \
+    && mkdir -p /data /g4data \
+    && chown -R appuser:appuser /app /data /g4data
+
+USER appuser
+
+ENTRYPOINT ["/usr/local/bin/entrypoint-geant4.sh"]
+CMD ["python", "worker/queue_worker.py"]

@@ -57,6 +57,21 @@ Worker loop (both backends):
 - `SHIELDLAB_WORKER_VISIBILITY_TIMEOUT` (default: `300`)
 - `SHIELDLAB_WORKER_MAX_DEQUEUE_COUNT` (default: `5`) — messages dequeued more than this many times are moved to the poison (dead-letter) queue
 
+Runner overrides (useful for host-native Geant4 workers while the UI/API stay containerized):
+
+- `SHIELDLAB_WORKER_PYTHON_EXE` — Python interpreter used for `python -m shieldlab.io.runner`
+- `SHIELDLAB_WORKER_BUILD_DIR` — explicit ShieldLab build directory passed as `--build-dir`
+- `SHIELDLAB_WORKER_G4_EXECUTABLE` — explicit Geant4 executable path passed as `--executable`
+- `SHIELDLAB_WORKER_GEANT4_SETUP` — explicit `geant4.sh` path passed as `--geant4-setup`
+- `SHIELDLAB_WORKER_WSL_DISTRO` — optional WSL distro name passed as `--wsl-distro`
+- `SHIELDLAB_WORKER_NO_PLOTS=1` — optional pass-through to `--no-plots`
+- `SHIELDLAB_WORKER_ALLOW_VALIDATION_ERRORS=1` — optional pass-through to `--allow-validation-errors`
+
+For WSL-backed runs, set `SHIELDLAB_WORKER_GEANT4_SETUP` to the Linux install
+inside the distro (for example `/home/<user>/geant4-install/bin/geant4.sh`). A
+Windows-mounted toolkit path such as `/mnt/<drive>/.../Geant4-*/bin/geant4.sh`
+may point at a non-Linux build and will not satisfy the ELF worker binary.
+
 ## Local run (free / no cloud)
 
 ```bash
@@ -72,6 +87,18 @@ worker to pick up and its artifacts are written under
 `SHIELDLAB_LOCAL_DATA_DIR/blobs/<output-container>/` — a fully local,
 cloud-free pipeline. Switch to Azure later by setting `SHIELDLAB_BACKEND=azure`
 plus the Azure storage variables; no code changes required.
+
+## Containerized Geant4 worker
+
+For a real Geant4-capable Docker worker, use the compose override file:
+
+```bash
+docker compose -f docker-compose.yml -f deploy/docker-compose.geant4.yml up -d --build
+```
+
+This builds `worker/Dockerfile.geant4`, compiles `build/ShieldLabG4` in the
+image, mounts a persistent `geant4-data` volume at `/g4data`, and
+downloads any missing Geant4 datasets on first container start.
 
 ## AKS / Batch run
 

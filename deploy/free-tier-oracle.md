@@ -147,3 +147,23 @@ requests are routed through the proxy.
 > No domain yet? A **Cloudflare Tunnel** gives instant TLS without opening any
 > inbound ports.
 
+## Optional: full Geant4 worker on Docker
+
+The default free-tier stack keeps the worker analytical-only. When you need a
+real Geant4-capable worker on a Linux host with Docker, use the dedicated
+override file:
+
+```bash
+docker compose -f docker-compose.yml -f deploy/docker-compose.geant4.yml \
+  --profile proxy up -d --build
+```
+
+This swaps the default worker image for a Geant4-enabled one built from
+`worker/Dockerfile.geant4`, compiles `build/ShieldLabG4` inside the container,
+and stores the Geant4 datasets in the named `geant4-data` volume mounted at
+`/g4data`. The first
+startup downloads the missing datasets, so expect it to take materially longer
+than the analytical-only path.
+
+For small VMs, keep `SHIELDLAB_RUN_MANAGER=serial`.
+

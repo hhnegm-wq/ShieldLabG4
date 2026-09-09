@@ -34,6 +34,10 @@ def _env(name: str, default: str = "") -> str:
     return os.environ.get(name, default).strip()
 
 
+def _env_flag(name: str) -> bool:
+    return _env(name, "").lower() in {"1", "true", "yes", "on"}
+
+
 def load_worker_config() -> WorkerConfig:
     return WorkerConfig(
         poll_seconds=int(_env("SHIELDLAB_WORKER_POLL_SECONDS", "10") or "10"),
@@ -65,6 +69,35 @@ def parse_study_blob_path(path_value: str, default_container: str) -> tuple[str,
     return default_container, normalized
 
 
+def build_runner_command(study_path: pathlib.Path, run_args: list[str]) -> list[str]:
+    python_exe = _env("SHIELDLAB_WORKER_PYTHON_EXE", "python") or "python"
+    cmd = [python_exe, "-m", "shieldlab.io.runner", str(study_path)]
+
+    build_dir = _env("SHIELDLAB_WORKER_BUILD_DIR")
+    if build_dir:
+        cmd.extend(["--build-dir", build_dir])
+
+    executable = _env("SHIELDLAB_WORKER_G4_EXECUTABLE")
+    if executable:
+        cmd.extend(["--executable", executable])
+
+    geant4_setup = _env("SHIELDLAB_WORKER_GEANT4_SETUP")
+    if geant4_setup:
+        cmd.extend(["--geant4-setup", geant4_setup])
+
+    wsl_distro = _env("SHIELDLAB_WORKER_WSL_DISTRO")
+    if wsl_distro:
+        cmd.extend(["--wsl-distro", wsl_distro])
+
+    if _env_flag("SHIELDLAB_WORKER_NO_PLOTS"):
+        cmd.append("--no-plots")
+    if _env_flag("SHIELDLAB_WORKER_ALLOW_VALIDATION_ERRORS"):
+        cmd.append("--allow-validation-errors")
+
+    cmd.extend(str(arg) for arg in run_args)
+    return cmd
+
+
 def run_job(
     message_data: dict,
     backend: JobBackend,
@@ -89,8 +122,7 @@ def run_job(
         study_path = tmp_path / pathlib.Path(input_blob_name).name
         study_path.write_bytes(study_bytes)
 
-        cmd = ["python", "-m", "shieldlab.io.runner", str(study_path)]
-        cmd.extend(str(arg) for arg in run_args)
+        cmd = build_runner_command(study_path, run_args)
 
         proc = subprocess.run(
             cmd, capture_output=True, text=True, timeout=worker_cfg.job_timeout

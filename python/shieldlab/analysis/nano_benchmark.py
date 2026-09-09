@@ -12,7 +12,7 @@ from shieldlab.io.study_validator import has_errors, issues_to_frame, validate_s
 
 
 def _load_study(study_file: str | Path) -> dict[str, Any]:
-    with Path(study_file).open("r", encoding="utf-8") as handle:
+    with Path(study_file).open("r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 

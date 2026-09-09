@@ -539,7 +539,7 @@ def validate_study(study: dict[str, Any]) -> list[ValidationIssue]:
 
 
 def validate_study_file(study_file: str | Path) -> list[ValidationIssue]:
-    with Path(study_file).open("r", encoding="utf-8") as handle:
+    with Path(study_file).open("r", encoding="utf-8-sig") as handle:
         return validate_study(json.load(handle))
 
 

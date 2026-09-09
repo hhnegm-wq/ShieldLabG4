@@ -32,7 +32,7 @@ _ENERGY_DIR_PATTERN = re.compile(r"^E_(?P<energy>.+)_(?P<unit>[A-Za-z]+)$")
 
 
 def _load_study(study_file: str | Path) -> dict[str, Any]:
-    with Path(study_file).open("r", encoding="utf-8") as handle:
+    with Path(study_file).open("r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 

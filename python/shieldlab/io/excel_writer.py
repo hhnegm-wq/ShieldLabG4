@@ -26,7 +26,7 @@ def _study_info(study_file: str | Path | None) -> pd.DataFrame:
     study_path = Path(study_file)
     if not study_path.exists():
         return pd.DataFrame()
-    with study_path.open("r", encoding="utf-8") as handle:
+    with study_path.open("r", encoding="utf-8-sig") as handle:
         study = json.load(handle)
 
     rows: list[dict[str, object]] = []
@@ -162,7 +162,7 @@ def write_workbook(
     if study_file is not None:
         sp = Path(study_file)
         if sp.exists():
-            with sp.open("r", encoding="utf-8") as fh:
+            with sp.open("r", encoding="utf-8-sig") as fh:
                 study_dict = json.load(fh)
     mat_descriptors = descriptors_from_study(study_dict)
     elem_expansion = elemental_expansion_table(study_dict)

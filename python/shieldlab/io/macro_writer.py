@@ -368,7 +368,7 @@ def macro_from_study(study: dict[str, Any]) -> str:
 
 def write_macro(study_file: str | Path, output_file: str | Path | None = None) -> Path:
     study_path = Path(study_file)
-    with study_path.open("r", encoding="utf-8") as handle:
+    with study_path.open("r", encoding="utf-8-sig") as handle:
         study = json.load(handle)
 
     if output_file is None:

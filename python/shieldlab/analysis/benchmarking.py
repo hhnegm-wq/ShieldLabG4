@@ -33,7 +33,7 @@ def load_reference_acceptance(study_file: str | Path | None) -> dict:
     if not study_path.exists():
         return {}
 
-    with study_path.open("r", encoding="utf-8") as handle:
+    with study_path.open("r", encoding="utf-8-sig") as handle:
         study = json.load(handle)
 
     references = study.get("references", {})
@@ -64,7 +64,7 @@ def load_reference_buildup(study_file: str | Path | None) -> pd.DataFrame:
     if not study_path.exists():
         return pd.DataFrame(columns=BUILDUP_COLUMNS)
 
-    with study_path.open("r", encoding="utf-8") as handle:
+    with study_path.open("r", encoding="utf-8-sig") as handle:
         study = json.load(handle)
 
     references = study.get("references", {})

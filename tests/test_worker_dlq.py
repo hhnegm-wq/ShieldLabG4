@@ -7,12 +7,13 @@ refactored worker.process_once / run_job, instead of mocking Azure clients.
 from __future__ import annotations
 
 import json
+import pathlib
 
 import pytest
 
 from shieldlab.backends import BackendConfig
 from shieldlab.backends.local_backend import LocalBackend
-from worker.queue_worker import WorkerConfig, process_once, run_job
+from worker.queue_worker import WorkerConfig, build_runner_command, process_once, run_job
 
 
 def _backend(tmp_path) -> LocalBackend:
@@ -116,6 +117,36 @@ class TestProcessOnceDlq:
 class TestRunJobRoundTrip:
     """run_job pulls the study blob, runs (faked), and uploads log + artifacts."""
 
+    def test_build_runner_command_honors_env_overrides(self, monkeypatch) -> None:
+        study_path = pathlib.Path("/tmp/study.json")
+        monkeypatch.setenv("SHIELDLAB_WORKER_PYTHON_EXE", "/opt/shieldlab-venv/bin/python")
+        monkeypatch.setenv("SHIELDLAB_WORKER_BUILD_DIR", "/opt/shieldlab/ShieldLabG4/build")
+        monkeypatch.setenv("SHIELDLAB_WORKER_G4_EXECUTABLE", "/opt/shieldlab/ShieldLabG4/build/ShieldLabG4")
+        monkeypatch.setenv("SHIELDLAB_WORKER_GEANT4_SETUP", "/usr/local/bin/geant4.sh")
+        monkeypatch.setenv("SHIELDLAB_WORKER_WSL_DISTRO", "Ubuntu")
+        monkeypatch.setenv("SHIELDLAB_WORKER_NO_PLOTS", "1")
+        monkeypatch.setenv("SHIELDLAB_WORKER_ALLOW_VALIDATION_ERRORS", "true")
+
+        cmd = build_runner_command(study_path, ["--skip-geant4"])
+
+        assert cmd == [
+            "/opt/shieldlab-venv/bin/python",
+            "-m",
+            "shieldlab.io.runner",
+            str(study_path),
+            "--build-dir",
+            "/opt/shieldlab/ShieldLabG4/build",
+            "--executable",
+            "/opt/shieldlab/ShieldLabG4/build/ShieldLabG4",
+            "--geant4-setup",
+            "/usr/local/bin/geant4.sh",
+            "--wsl-distro",
+            "Ubuntu",
+            "--no-plots",
+            "--allow-validation-errors",
+            "--skip-geant4",
+        ]
+
     def test_run_job_uploads_log_and_artifacts(self, tmp_path, monkeypatch) -> None:
         backend = LocalBackend(BackendConfig(local_root=str(tmp_path)))
         backend.put_blob("simulation-input", "studies/j.json", b'{"study": true}')
@@ -149,4 +180,45 @@ class TestRunJobRoundTrip:
             backend.get_blob("simulation-output", "jobs/j/artifacts/sub/out.csv")
             == b"col\n1\n"
         )
+
+    def test_run_job_uses_configured_runner_command(self, tmp_path, monkeypatch) -> None:
+        backend = LocalBackend(BackendConfig(local_root=str(tmp_path)))
+        backend.put_blob("simulation-input", "studies/j.json", b'{"study": true}')
+        monkeypatch.setenv("SHIELDLAB_WORKER_PYTHON_EXE", "/opt/shieldlab-venv/bin/python")
+        monkeypatch.setenv("SHIELDLAB_WORKER_BUILD_DIR", "/opt/shieldlab/ShieldLabG4/build")
+        monkeypatch.setenv("SHIELDLAB_WORKER_G4_EXECUTABLE", "/opt/shieldlab/ShieldLabG4/build/ShieldLabG4")
+        monkeypatch.setenv("SHIELDLAB_WORKER_GEANT4_SETUP", "/usr/local/bin/geant4.sh")
+
+        seen: dict[str, object] = {}
+
+        class _Proc:
+            returncode = 0
+            stdout = "ok"
+            stderr = ""
+
+        def _run(cmd, **kwargs):
+            seen["cmd"] = cmd
+            seen["timeout"] = kwargs.get("timeout")
+            return _Proc()
+
+        monkeypatch.setattr("worker.queue_worker.subprocess.run", _run)
+        monkeypatch.setenv("SHIELDLAB_RESULTS_DIR", str(tmp_path / "missing-results"))
+
+        payload = {
+            "job_id": "j",
+            "study_blob_path": "simulation-input/studies/j.json",
+            "output_prefix": "jobs/j/",
+            "run_args": ["--skip-geant4"],
+        }
+
+        run_job(payload, backend, backend.config, _worker_cfg())
+
+        cmd = seen["cmd"]
+        assert isinstance(cmd, list)
+        assert cmd[:3] == ["/opt/shieldlab-venv/bin/python", "-m", "shieldlab.io.runner"]
+        assert "--build-dir" in cmd
+        assert "--executable" in cmd
+        assert "--geant4-setup" in cmd
+        assert cmd[-1] == "--skip-geant4"
+        assert seen["timeout"] == _worker_cfg().job_timeout
 

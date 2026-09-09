@@ -1,0 +1,31 @@
+services:
+  worker:
+    image: shieldlabg4:worker-geant4
+    build:
+      context: .
+      dockerfile: worker/Dockerfile.geant4
+    entrypoint: ["/usr/local/bin/entrypoint-geant4.sh"]
+    environment:
+      SHIELDLAB_BACKEND: local
+      SHIELDLAB_LOCAL_DATA_DIR: /data
+      SHIELDLAB_QUEUE_NAME: simulation-jobs
+      SHIELDLAB_INPUT_CONTAINER: simulation-input
+      SHIELDLAB_OUTPUT_CONTAINER: simulation-output
+      SHIELDLAB_API_KEY_HASHES: ${SHIELDLAB_API_KEY_HASHES:-}
+      SHIELDLAB_API_KEYS: ${SHIELDLAB_API_KEYS:-}
+      SHIELDLAB_RATE_LIMIT_PER_MIN: ${SHIELDLAB_RATE_LIMIT_PER_MIN:-60}
+      SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN: ${SHIELDLAB_GLOBAL_RATE_LIMIT_PER_MIN:-120}
+      SHIELDLAB_TRUST_PROXY: ${SHIELDLAB_TRUST_PROXY:-1}
+      SHIELDLAB_DEV: ${SHIELDLAB_DEV:-0}
+      SHIELDLAB_JWT_SECRET: ${SHIELDLAB_JWT_SECRET:-}
+      SHIELDLAB_SUPABASE_URL: ${SHIELDLAB_SUPABASE_URL:-}
+      SHIELDLAB_SUPABASE_ANON_KEY: ${SHIELDLAB_SUPABASE_ANON_KEY:-}
+      SHIELDLAB_SUPABASE_REDIRECT_TO: ${SHIELDLAB_SUPABASE_REDIRECT_TO:-}
+      SHIELDLAB_RESULTS_DIR: /app/build/results
+      SHIELDLAB_RUN_MANAGER: ${SHIELDLAB_RUN_MANAGER:-serial}
+    volumes:
+      - shieldlab-data:/data
+      - geant4-data:/g4data
+
+volumes:
+  geant4-data:

@@ -28,7 +28,7 @@ from shieldlab.io.study_validator import has_errors, issues_to_frame, validate_s
 
 
 def _load_study(study_file: str | Path) -> dict[str, Any]:
-    with Path(study_file).open("r", encoding="utf-8") as handle:
+    with Path(study_file).open("r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 
@@ -80,9 +80,17 @@ def _run_geant4(
     distro = wsl_distro or build_distro or macro_distro
 
     if distro:
-        setup = f"source {shlex.quote(geant4_setup)}; " if geant4_setup else ""
-        physics_export = f"export SHIELDLAB_PHYSICS_LIST={shlex.quote(physics_list)}; " if physics_list else ""
-        script = f"cd {shlex.quote(build_posix)}; {physics_export}{setup}{shlex.quote(executable)} {shlex.quote(macro_posix)}"
+        script_parts = [f"cd {shlex.quote(build_posix)}"]
+        if physics_list:
+            script_parts.append(
+                f"export SHIELDLAB_PHYSICS_LIST={shlex.quote(physics_list)}"
+            )
+        if geant4_setup:
+            script_parts.append(f"source {shlex.quote(geant4_setup)}")
+        script_parts.append(
+            f"{shlex.quote(executable)} {shlex.quote(macro_posix)}"
+        )
+        script = " && ".join(script_parts)
         _log.info("Running G4 via WSL distro=%s", distro)
         subprocess.run(
             ["wsl", "-d", distro, "--", "bash", "-lc", script],
